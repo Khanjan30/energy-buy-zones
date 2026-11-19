@@ -104,3 +104,10 @@ def test_backtest_runs_and_reports_tests():
     assert bt["dates"] >= 12
     assert bt["observations"] > 100
     assert {t["name"] for t in bt["tests"]} == {"Strong beats Weak", "Buying in the zone beats buying rich"}
+
+
+def test_monthly_uranium_value_stays_usable_for_weeks():
+    drv = engine.Driver({"name": "uranium", "series": [["2026-10-31", 99.0]]})
+    assert drv.series.on(date(2026, 11, 19)) == 99.0
+    daily = engine.Driver({"name": "brent", "series": [["2026-10-31", 80.0]]})
+    assert daily.series.on(date(2026, 11, 19)) is None

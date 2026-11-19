@@ -10,7 +10,8 @@ class Driver:
         self.name = rec["name"]
         self.label = rec.get("label", rec["name"])
         self.is_rate = self.name == "us10y"
-        self.series = Prices(rec["series"])
+        # Uranium is entered by hand once a month, so allow its last value to be up to 45 days old.
+        self.series = Prices(rec["series"], max_gap=45 if self.name == "uranium" else 10)
 
 
 def technicals(prices, asof):

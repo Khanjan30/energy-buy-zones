@@ -196,9 +196,11 @@ def growth(fin, asof, years=3):
 
 
 class Prices:
-    def __init__(self, closes):
+    def __init__(self, closes, max_gap=10):
         self.dates = [d(x[0]) for x in closes]
         self.closes = [x[1] for x in closes]
+        # How stale the last value may be. Daily series allow 10 days; monthly series need more.
+        self.max_gap = max_gap
 
     @property
     def empty(self):
@@ -208,7 +210,7 @@ class Prices:
         i = bisect_right(self.dates, day) - 1
         if i < 0:
             return None
-        if (day - self.dates[i]).days > 10:
+        if (day - self.dates[i]).days > self.max_gap:
             return None
         return self.closes[i]
 
