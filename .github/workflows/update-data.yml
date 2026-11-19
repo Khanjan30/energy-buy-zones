@@ -1,0 +1,71 @@
+name: Update data
+
+# Weekdays after the US close: pull prices, filings and drivers, score every stock,
+# commit the results. The commit triggers a Vercel rebuild of the site.
+on:
+  schedule:
+    - cron: "37 22 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      backtest:
+        description: "Rerun the five-year backtest"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      # Downloaded prices and filings are cached between runs so only new days are fetched.
+      - uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: data-cache-${{ github.run_id }}
+          restore-keys: data-cache-
+
+      - name: Run tests
+        run: python -m pytest -q pipeline/tests
+
+      - name: Score the universe
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          SEC_CONTACT_EMAIL: ${{ vars.SEC_CONTACT_EMAIL }}
+        run: |
+          # Backtest on manual runs (if ticked) and every Monday; it takes a few extra minutes.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.backtest }}" = "true" ]; then
+            python -m pipeline.run --backtest
+          elif [ "$(date -u +%u)" = "1" ]; then
+            python -m pipeline.run --backtest
+          else
+            python -m pipeline.run
+          fi
+
+      - name: Commit results
+        run: |
+          git config user.name "energy-buy-zones-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/data
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Data update $(date -u +%Y-%m-%d)"
+            git push
+          fi

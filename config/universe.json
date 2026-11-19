@@ -1,0 +1,84 @@
+{
+  "subsectors": {
+    "oil_gas": { "label": "Oil and gas producers", "driver": "brent", "regulated": false },
+    "gas_pipelines": { "label": "Gas exporters and pipelines", "driver": "henry_hub", "regulated": true },
+    "utilities": { "label": "Regulated utilities", "driver": "us10y", "regulated": true },
+    "power": { "label": "Power producers", "driver": "henry_hub", "regulated": false },
+    "nuclear_fuel": { "label": "Nuclear fuel and services", "driver": "uranium", "regulated": false },
+    "grid": { "label": "Grid and power equipment", "driver": null, "regulated": false },
+    "solar_storage": { "label": "Solar and storage", "driver": "us10y", "regulated": false },
+    "early": { "label": "Early-stage, no profits yet", "driver": null, "regulated": false }
+  },
+  "stocks": [
+    { "ticker": "XOM", "name": "Exxon Mobil", "subsector": "oil_gas" },
+    { "ticker": "CVX", "name": "Chevron", "subsector": "oil_gas" },
+    { "ticker": "COP", "name": "ConocoPhillips", "subsector": "oil_gas" },
+    { "ticker": "EOG", "name": "EOG Resources", "subsector": "oil_gas" },
+    { "ticker": "OXY", "name": "Occidental Petroleum", "subsector": "oil_gas" },
+    { "ticker": "DVN", "name": "Devon Energy", "subsector": "oil_gas" },
+    { "ticker": "FANG", "name": "Diamondback Energy", "subsector": "oil_gas" },
+    { "ticker": "EQT", "name": "EQT", "subsector": "oil_gas", "driver": "henry_hub" },
+    { "ticker": "EXE", "name": "Expand Energy", "subsector": "oil_gas", "driver": "henry_hub" },
+
+    { "ticker": "LNG", "name": "Cheniere Energy", "subsector": "gas_pipelines", "regulated": false },
+    { "ticker": "VG", "name": "Venture Global", "subsector": "gas_pipelines", "regulated": false },
+    { "ticker": "KMI", "name": "Kinder Morgan", "subsector": "gas_pipelines" },
+    { "ticker": "WMB", "name": "Williams Companies", "subsector": "gas_pipelines" },
+    { "ticker": "ET", "name": "Energy Transfer", "subsector": "gas_pipelines" },
+    { "ticker": "EPD", "name": "Enterprise Products Partners", "subsector": "gas_pipelines" },
+    { "ticker": "OKE", "name": "ONEOK", "subsector": "gas_pipelines" },
+
+    { "ticker": "NEE", "name": "NextEra Energy", "subsector": "utilities" },
+    { "ticker": "SO", "name": "Southern Company", "subsector": "utilities" },
+    { "ticker": "DUK", "name": "Duke Energy", "subsector": "utilities" },
+    { "ticker": "AEP", "name": "American Electric Power", "subsector": "utilities" },
+    { "ticker": "D", "name": "Dominion Energy", "subsector": "utilities" },
+    { "ticker": "SRE", "name": "Sempra", "subsector": "utilities" },
+    { "ticker": "ETR", "name": "Entergy", "subsector": "utilities" },
+    { "ticker": "XEL", "name": "Xcel Energy", "subsector": "utilities" },
+    { "ticker": "NGG", "name": "National Grid", "subsector": "utilities" },
+
+    { "ticker": "CEG", "name": "Constellation Energy", "subsector": "power" },
+    { "ticker": "VST", "name": "Vistra", "subsector": "power" },
+    { "ticker": "NRG", "name": "NRG Energy", "subsector": "power" },
+    { "ticker": "TLN", "name": "Talen Energy", "subsector": "power" },
+    { "ticker": "BEP", "name": "Brookfield Renewable Partners", "subsector": "power" },
+
+    { "ticker": "CCJ", "name": "Cameco", "subsector": "nuclear_fuel" },
+    { "ticker": "LEU", "name": "Centrus Energy", "subsector": "nuclear_fuel" },
+    { "ticker": "BWXT", "name": "BWX Technologies", "subsector": "nuclear_fuel" },
+    { "ticker": "UEC", "name": "Uranium Energy", "subsector": "nuclear_fuel" },
+    { "ticker": "NXE", "name": "NexGen Energy", "subsector": "nuclear_fuel" },
+
+    { "ticker": "GEV", "name": "GE Vernova", "subsector": "grid" },
+    { "ticker": "VRT", "name": "Vertiv", "subsector": "grid" },
+    { "ticker": "ETN", "name": "Eaton", "subsector": "grid" },
+    { "ticker": "PWR", "name": "Quanta Services", "subsector": "grid" },
+    { "ticker": "HUBB", "name": "Hubbell", "subsector": "grid" },
+    { "ticker": "POWL", "name": "Powell Industries", "subsector": "grid" },
+    { "ticker": "ITRI", "name": "Itron", "subsector": "grid" },
+
+    { "ticker": "FSLR", "name": "First Solar", "subsector": "solar_storage" },
+    { "ticker": "ENPH", "name": "Enphase Energy", "subsector": "solar_storage" },
+    { "ticker": "NXT", "name": "Nextracker", "subsector": "solar_storage" },
+    { "ticker": "SEDG", "name": "SolarEdge", "subsector": "solar_storage" },
+    { "ticker": "ARRY", "name": "Array Technologies", "subsector": "solar_storage" },
+    { "ticker": "RUN", "name": "Sunrun", "subsector": "solar_storage" },
+    { "ticker": "FLNC", "name": "Fluence Energy", "subsector": "solar_storage" },
+
+    { "ticker": "OKLO", "name": "Oklo", "subsector": "early" },
+    { "ticker": "SMR", "name": "NuScale Power", "subsector": "early" },
+    { "ticker": "XE", "name": "X-energy", "subsector": "early" },
+    { "ticker": "STDN", "name": "Standard Nuclear", "subsector": "early" },
+    { "ticker": "FRVO", "name": "Fervo Energy", "subsector": "early" },
+    { "ticker": "NNE", "name": "Nano Nuclear Energy", "subsector": "early" },
+    { "ticker": "EOSE", "name": "Eos Energy", "subsector": "early" }
+  ],
+  "tracked": [
+    { "ticker": "RNW", "name": "ReNew Energy Global", "status": "deal_pending", "deal_price": 7.02, "note": "Buyout at $7.02 per share expected to complete in early 2027." },
+    { "ticker": "IREN", "name": "IREN", "status": "not_scored", "note": "Data center and cloud operator, not an energy business." },
+    { "ticker": "AMT", "name": "American Tower", "status": "not_scored", "note": "Cell towers and data centers, not an energy business." },
+    { "ticker": "BE", "name": "Bloom Energy", "status": "watch", "note": "Fuel cells for data centers. On the watchlist." },
+    { "ticker": "GRID", "name": "First Trust Smart Grid fund", "status": "benchmark", "note": "Benchmark for grid and power equipment." }
+  ]
+}

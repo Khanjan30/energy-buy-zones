@@ -1,0 +1,11 @@
+{
+  "_note": "Starting weights from the Version 1 spec. Each row sums to 100. Adjust only after the backtest.",
+  "oil_gas":       { "value": 25, "strength": 20, "growth": 25, "policy": 10, "outside": 20 },
+  "gas_pipelines": { "value": 20, "strength": 25, "growth": 20, "policy": 15, "outside": 20 },
+  "utilities":     { "value": 20, "strength": 20, "growth": 15, "policy": 25, "outside": 20 },
+  "power":         { "value": 25, "strength": 20, "growth": 25, "policy": 20, "outside": 10 },
+  "nuclear_fuel":  { "value": 20, "strength": 20, "growth": 20, "policy": 25, "outside": 15 },
+  "grid":          { "value": 25, "strength": 20, "growth": 25, "policy": 15, "outside": 15 },
+  "solar_storage": { "value": 25, "strength": 20, "growth": 15, "policy": 25, "outside": 15 },
+  "early":         { "value": 10, "strength": 35, "growth": 20, "policy": 25, "outside": 10 }
+}

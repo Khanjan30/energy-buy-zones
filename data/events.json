@@ -1,0 +1,179 @@
+{
+  "_note": "Event log. One event can touch many stocks. impact runs -2 to +2. likelihood: happening, likely, early. After review_date the weight halves for 90 days, then drops to zero. core: true only when the event hits the main business. Edit this file on GitHub to add or change events; the nightly job picks it up.",
+  "events": [
+    {
+      "id": "iran-war-hormuz",
+      "date": "2026-02-28",
+      "title": "Iran war keeps the Strait of Hormuz disrupted",
+      "type": "Geopolitical",
+      "likelihood": "happening",
+      "review_date": "2027-01-31",
+      "summary": "Shipping through Hormuz, which carried about a fifth of world oil before the war, is still heavily disrupted, with a US naval blockade on Iranian ports. Prices swing on every headline about talks.",
+      "source_name": "Euronews, 2 Nov 2026",
+      "source_url": "https://www.euronews.com/2026/11/02/oil-slides-on-hormuz-deal-hopes-but-trump-keeps-iran-strikes-on-the-table",
+      "effects": [
+        { "subsectors": ["oil_gas"], "impact": 1, "why": "Supply loss keeps crude prices above pre-war levels, which lifts producer cash flow." },
+        { "tickers": ["LNG", "VG"], "impact": 1, "why": "Gulf gas cargoes are stuck, so buyers turn to US export terminals." }
+      ]
+    },
+    {
+      "id": "hormuz-deal-talks",
+      "date": "2026-11-02",
+      "title": "Qatar-brokered plan could reopen Hormuz",
+      "type": "Geopolitical",
+      "likelihood": "early",
+      "review_date": "2027-01-31",
+      "summary": "Iran says the strait could reopen within days if the US lifts the blockade and sanctions. Washington has not agreed, and Iran has since played down talk of a deal. Brent fell about a fifth during November on the hopes.",
+      "source_name": "Investinglive, 2 Nov 2026",
+      "source_url": "https://investinglive.com/commodities/oil-slips-as-iran-says-qatar-brokered-plan-could-reopen-hormuz-in-two-days/",
+      "effects": [
+        { "subsectors": ["oil_gas"], "impact": -1, "why": "A reopening would release stuck barrels and pull crude prices down." }
+      ]
+    },
+    {
+      "id": "fed-december-hike",
+      "date": "2026-10-28",
+      "title": "Markets expect a Federal Reserve rate hike in December",
+      "type": "Interest rates",
+      "likelihood": "likely",
+      "review_date": "2027-01-31",
+      "summary": "After hotter inflation readings, markets price a 0.25 point hike at the December meeting.",
+      "source_name": "Morningstar",
+      "source_url": "https://www.morningstar.com/markets/what-expect-october-2026-fed-meeting",
+      "effects": [
+        { "subsectors": ["utilities", "solar_storage"], "impact": -1, "why": "Higher rates raise borrowing costs for capital-heavy builders and make dividend stocks less attractive next to bonds." },
+        { "subsectors": ["early"], "impact": -1, "why": "Companies with no profits yet lose the most value when money gets more expensive." }
+      ]
+    },
+    {
+      "id": "texas-governor-data-centers",
+      "date": "2026-11-03",
+      "title": "Texas elects a governor who wants to keep data center approvals frozen",
+      "type": "Government change",
+      "likelihood": "likely",
+      "review_date": "2027-06-30",
+      "summary": "Gina Hinojosa won and pledged a ban on new data center approvals until the Legislature passes new rules. Approvals on the state grid were already paused in August for an audit due to finish in December. She takes office 19 January.",
+      "source_name": "Texas Tribune, 4 Nov 2026",
+      "source_url": "https://texastribune.org/2026/11/04/data-center-texas-pause-gina-hinojosa-governor-policies/",
+      "effects": [
+        { "tickers": ["VST", "NRG"], "impact": -1, "why": "Texas power sellers were counting on data center demand to lift prices and sign long contracts." },
+        { "tickers": ["CEG"], "impact": -1, "why": "Owns a large Texas gas fleet after buying Calpine." }
+      ]
+    },
+    {
+      "id": "georgia-psc-flip",
+      "date": "2026-11-03",
+      "title": "Democrats take control of Georgia's utility regulator",
+      "type": "Government change",
+      "likelihood": "happening",
+      "review_date": "2027-06-30",
+      "summary": "From January, three of five Georgia Public Service Commission seats are held by Democrats who ran on power bills and data center costs. The commission already ordered a review of how Georgia Power bills data centers.",
+      "source_name": "S&P Global, 4 Nov 2026",
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/110426-democrats-flip-georgia-psc-as-power-bills-data-center-costs-loom",
+      "effects": [
+        { "tickers": ["SO"], "impact": -1, "why": "Georgia Power is the biggest piece of Southern Company; tougher rate cases could slow earnings growth." }
+      ]
+    },
+    {
+      "id": "senate-permitting-bill",
+      "date": "2026-11-09",
+      "title": "Senate advances the bipartisan permitting bill 73-25",
+      "type": "Rule change",
+      "likelihood": "likely",
+      "review_date": "2027-03-31",
+      "summary": "The bill would shorten permit timelines and widen federal power to site large interstate power lines. It still needs final Senate passage and the House, where support is uncertain.",
+      "source_name": "Axios, 9 Nov 2026",
+      "source_url": "https://www.axios.com/2026/11/09/senate-advances-bipartisan-permitting-bill-key-test-vote",
+      "effects": [
+        { "subsectors": ["grid"], "impact": 1, "why": "Faster approval of long power lines means more orders for transformers, switchgear and line builders." },
+        { "subsectors": ["solar_storage"], "impact": 1, "why": "Clears a path for previously approved clean energy projects." },
+        { "tickers": ["LNG", "VG"], "impact": 1, "why": "Critics say it would speed up gas export projects." }
+      ]
+    },
+    {
+      "id": "midterms-congress",
+      "date": "2026-11-03",
+      "title": "Midterm results weaken the administration's hand in Congress",
+      "type": "Government change",
+      "likelihood": "happening",
+      "review_date": "2027-06-30",
+      "summary": "The first major Senate action after an election that broadly went against the president was the permitting bill. Further cuts to clean energy tax credits look harder to pass.",
+      "source_name": "Associated Press via WSB-TV, 9 Nov 2026",
+      "source_url": "https://www.wsbtv.com/news/business/senate-weighs/CCXZM3VQ3M7UNDM7U22WKOXSYI/",
+      "effects": [
+        { "subsectors": ["solar_storage"], "impact": 1, "why": "Lower risk of new hits to solar and storage tax credits." }
+      ]
+    },
+    {
+      "id": "ny-data-center-moratorium",
+      "date": "2026-07-14",
+      "title": "New York pauses new hyperscale data centers for a year",
+      "type": "Rule change",
+      "likelihood": "happening",
+      "review_date": "2027-07-14",
+      "summary": "An executive order stops state permits for data centers drawing 50 megawatts or more while the state writes standards.",
+      "source_name": "Inside Climate News, 14 Jul 2026",
+      "source_url": "https://insideclimatenews.org/news/14072026/new-york-first-data-center-moratorium/",
+      "effects": [
+        { "tickers": ["NGG"], "impact": -1, "why": "Upstate New York is a large part of National Grid's US business; less new load means slower network growth." }
+      ]
+    },
+    {
+      "id": "china-rare-earth-pause",
+      "date": "2026-11-09",
+      "title": "China extends its rare earth export pause only to January",
+      "type": "Trade and tariffs",
+      "likelihood": "likely",
+      "review_date": "2027-01-10",
+      "summary": "Beijing pushed its pause on rare earth export curbs out two months, in line with a truce now running to 10 January 2027. Licensing stays in place, and US imports of rare earths are down about three quarters.",
+      "source_name": "The National, 9 Nov 2026; CSIS",
+      "source_url": "https://www.thenationalnews.com/news/us/2026/11/09/china-extends-pause-on-rare-earth-export-curbs-for-two-months/",
+      "effects": [
+        { "tickers": ["GEV", "FLNC", "ENPH", "SEDG", "EOSE"], "impact": -1, "why": "Magnets, battery materials and electronics parts depend on Chinese supply that could be cut again on short notice." }
+      ]
+    },
+    {
+      "id": "cyber-attacks-power",
+      "date": "2026-11-07",
+      "title": "Ransomware and state-backed attacks keep hitting power companies",
+      "type": "Cyber attack",
+      "likelihood": "likely",
+      "review_date": "2027-02-28",
+      "summary": "A Colorado electric cooperative disclosed a ransomware breach found on 7 November. In July, Iran-linked hackers knocked a small UK generator offline for four days, and Europe tied a December grid attack in Poland to Russia.",
+      "source_name": "SecurityWeek",
+      "source_url": "https://www.securityweek.com/cyberattack-causes-significant-disruption-colorado-electric-utility/",
+      "effects": [
+        { "subsectors": ["utilities", "power"], "impact": -1, "why": "More spending on security, possible outages and fines, and stricter rules for operators." },
+        { "tickers": ["ITRI"], "impact": 1, "why": "Sells grid monitoring and secure metering that utilities buy after incidents." }
+      ]
+    },
+    {
+      "id": "hurricane-isaias",
+      "date": "2026-10-09",
+      "title": "Hurricane Isaias knocks out power on the Gulf Coast",
+      "type": "Natural disaster",
+      "likelihood": "happening",
+      "review_date": "2027-01-31",
+      "summary": "The first hurricane of a quiet season landed near Pensacola and left over 800,000 customers without power across Florida and Alabama. Power was restored within about a week.",
+      "source_name": "Al Jazeera, 10 Oct 2026",
+      "source_url": "https://www.aljazeera.com/news/2026/10/10/hurricane-isaias-leaves-two-dead-and-800000-without-power-in-us-southeast",
+      "effects": [
+        { "tickers": ["SO", "NEE"], "impact": -1, "why": "Repair costs come first; regulators usually let utilities recover them later, so the hit is short term." }
+      ]
+    },
+    {
+      "id": "xcel-wildfire-lawsuit",
+      "date": "2025-12-17",
+      "title": "Texas sues Xcel over the state's largest wildfire",
+      "type": "Natural disaster",
+      "likelihood": "happening",
+      "review_date": "2027-06-30",
+      "summary": "The state says decayed Xcel poles sparked the 2024 Smokehouse Creek fire, with more than $1 billion in damage. Xcel agreed to a large pole inspection, and the damages case continues.",
+      "source_name": "E&E News, 24 Feb 2026",
+      "source_url": "https://www.eenews.net/articles/xcel-texas-reach-pole-inspection-deal-in-wildfire-lawsuit",
+      "effects": [
+        { "tickers": ["XEL"], "impact": -1, "why": "Wildfire payouts and safety spending can drain cash and raise borrowing costs." }
+      ]
+    }
+  ]
+}

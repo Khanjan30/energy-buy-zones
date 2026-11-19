@@ -1,0 +1,6 @@
+{
+  "_note": "Long-term uranium contract price, US dollars per pound, one value per month. Add the latest value each month from Cameco's published uranium price page. The driver input switches on once there are about 3 years of monthly values.",
+  "series": [
+    ["2026-10-31", 99.0]
+  ]
+}
