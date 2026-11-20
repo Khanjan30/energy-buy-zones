@@ -12,8 +12,8 @@ export default function EventsList({ events }) {
   const shown = events.filter((e) => type === "all" || e.type === type);
 
   return (
-    <div className="card">
-      <div className="filters" style={{ marginBottom: 14 }}>
+    <div className="panel">
+      <div className="chips" style={{ marginBottom: 14 }}>
         <button className={`chip ${type === "all" ? "on" : ""}`} onClick={() => setType("all")}>All ({events.length})</button>
         {present.map((t) => (
           <button key={t} className={`chip ${type === t ? "on" : ""}`} onClick={() => setType(t)}>
@@ -27,8 +27,8 @@ export default function EventsList({ events }) {
             <span className="pill">{e.type}</span>
             <span className="pill">{e.pillar === "policy" ? "Policy pillar" : "Outside pressure pillar"}</span>
             <span>{date(e.date)}</span>
-            <span>· {LIKELY[e.likelihood] || e.likelihood}</span>
-            <span>· review by {date(e.review_date)}</span>
+            <span>{LIKELY[e.likelihood] || e.likelihood}</span>
+            <span>Review by {date(e.review_date)}</span>
           </div>
           <h3 style={{ marginTop: 6 }}>{e.title}</h3>
           {e.summary && <p className="muted" style={{ marginTop: 4 }}>{e.summary}</p>}
@@ -40,7 +40,7 @@ export default function EventsList({ events }) {
                   <span key={t}>{j ? ", " : ""}<Link href={`/stock/${t}/`}>{t}</Link></span>
                 ))}
                 {(x.subsectors || []).length > 0 && <span>{(x.tickers || []).length ? ", " : ""}all of {x.subsectors.join(", ").replace(/_/g, " ")}</span>}
-                {" · "}{x.why}
+                {": "}{x.why}
               </li>
             ))}
           </ul>

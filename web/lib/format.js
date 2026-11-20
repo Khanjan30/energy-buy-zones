@@ -1,6 +1,7 @@
 export function money(x, digits = 2) {
-  if (x === null || x === undefined) return "—";
-  return "$" + Number(x).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  if (x === null || x === undefined || Number.isNaN(x)) return "—";
+  const n = Number(x);
+  return (n < 0 ? "-$" : "$") + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
 export function big(x, currency = "USD") {

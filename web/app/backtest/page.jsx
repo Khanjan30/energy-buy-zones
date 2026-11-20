@@ -16,25 +16,25 @@ function ExcessBars({ rows }) {
   return (
     <div className="chart">
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Average return versus the group by bucket">
-        <line x1={mid} x2={mid} y1={0} y2={H - 20} stroke="var(--text-3)" />
-        <text x={mid} y={H - 4} textAnchor="middle" fontSize="11" fill="var(--text-3)">0 = same as the group</text>
+        <line x1={mid} x2={mid} y1={0} y2={H - 20} stroke="var(--ink-3)" />
+        <text x={mid} y={H - 4} textAnchor="middle" fontSize="11" fill="var(--ink-3)">0 = same as the group</text>
         {items.map((r, i) => {
           const y = i * rowH + 6;
           const w = Math.abs(r.mean_excess) * scale;
           const pos = r.mean_excess >= 0;
           return (
             <g key={r.label}>
-              <text x={0} y={y + 15} fontSize="12.5" fill="var(--text)">{r.label}</text>
-              <text x={0} y={y + 28} fontSize="11" fill="var(--text-3)">{r.n} observations</text>
-              <rect x={pos ? mid : mid - w} y={y + 4} width={Math.max(w, 1)} height={18} rx="4" fill={pos ? "var(--accent)" : "var(--neg)"} />
-              <text x={W} y={y + 17} textAnchor="end" fontSize="12.5" fill="var(--text)" className="num">{pct(r.mean_excess, 1, true)}</text>
+              <text x={0} y={y + 15} fontSize="12.5" fill="var(--ink)">{r.label}</text>
+              <text x={0} y={y + 28} fontSize="11" fill="var(--ink-3)">{r.n} observations</text>
+              <rect x={pos ? mid : mid - w} y={y + 4} width={Math.max(w, 1)} height={18} rx="4" fill={pos ? "var(--s1)" : "var(--critical-ink)"} />
+              <text x={W} y={y + 17} textAnchor="end" fontSize="12.5" fill="var(--ink)" className="num">{pct(r.mean_excess, 1, true)}</text>
             </g>
           );
         })}
       </svg>
       <div className="legend">
-        <span><i className="swatch" style={{ background: "var(--accent)" }} /> Beat the group</span>
-        <span><i className="swatch" style={{ background: "var(--neg)" }} /> Trailed the group</span>
+        <span><i className="swatch" style={{ background: "var(--s1)" }} /> Beat the group</span>
+        <span><i className="swatch" style={{ background: "var(--critical-ink)" }} /> Trailed the group</span>
       </div>
     </div>
   );
@@ -42,8 +42,8 @@ function ExcessBars({ rows }) {
 
 function Table({ title, obj }) {
   return (
-    <div className="card">
-      <div className="card-head"><h2>{title}</h2></div>
+    <div className="panel">
+      <div className="panel-head"><h2>{title}</h2></div>
       <div className="table-wrap">
         <table>
           <thead>
@@ -84,10 +84,10 @@ export default function BacktestPage() {
         </div>
       </div>
       <div className="stack">
-        <div className="grid-3">
+        <div className="cols-3">
           {bt.tests.map((t) => (
-            <div className="card" key={t.name}>
-              <div className="card-head">
+            <div className="panel" key={t.name}>
+              <div className="panel-head">
                 <h3>{t.name}</h3>
                 <span className={`tag ${t.passed === true ? "buy" : t.passed === false ? "sell" : "none"}`}>
                   <span className="dot" aria-hidden />
@@ -97,25 +97,25 @@ export default function BacktestPage() {
               <p className="muted">{t.detail}</p>
             </div>
           ))}
-          <div className="card">
-            <div className="card-head"><h3>Read with care</h3></div>
+          <div className="panel">
+            <div className="panel-head"><h3>Read with care</h3></div>
             <p className="muted small">{bt.notes[0]} {bt.notes[1]}</p>
           </div>
         </div>
-        <div className="grid-2 even">
-          <div className="card">
-            <div className="card-head"><h2>By score band</h2><span className="faint small">Average 12-month return versus the group</span></div>
+        <div className="cols-even">
+          <div className="panel">
+            <div className="panel-head"><h2>By score band</h2><span className="faint small">Average 12-month return versus the group</span></div>
             <ExcessBars rows={bandRows} />
           </div>
-          <div className="card">
-            <div className="card-head"><h2>By action</h2><span className="faint small">Average 12-month return versus the group</span></div>
+          <div className="panel">
+            <div className="panel-head"><h2>By action</h2><span className="faint small">Average 12-month return versus the group</span></div>
             <ExcessBars rows={actionRows} />
           </div>
         </div>
         <Table title="By price versus fair value" obj={bt.by_position} />
         <Table title="By score band, full numbers" obj={bt.by_band} />
-        <div className="card">
-          <div className="card-head"><h2>How the test was run</h2></div>
+        <div className="panel">
+          <div className="panel-head"><h2>How the test was run</h2></div>
           <ul className="prose" style={{ margin: 0, paddingLeft: 18 }}>
             {bt.notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>

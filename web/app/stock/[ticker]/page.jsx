@@ -4,9 +4,14 @@ import PriceChart from "@/components/PriceChart";
 import PriceLadder from "@/components/PriceLadder";
 import TechPanel from "@/components/TechPanel";
 import Pending from "@/components/Pending";
-import { getScores } from "@/lib/data";
+import Radar from "@/components/Radar";
+import ScoreHistory from "@/components/ScoreHistory";
+import StockActions from "@/components/StockActions";
+import MiniRange from "@/components/MiniRange";
+import ActionTagPeer from "@/components/ActionTag";
+import { getBacktest, getScores } from "@/lib/data";
 import { big, date, money, num, pct } from "@/lib/format";
-import { ACTION_PLAIN, chartZone, priceCheck, summary } from "@/lib/plain";
+import { ACTION_PLAIN, chartZone, goodRange, priceCheck, summary } from "@/lib/plain";
 
 export const dynamicParams = false;
 
@@ -62,6 +67,9 @@ export default async function StockPage({ params }) {
   const t = s.tech || {};
   const cz = chartZone(t);
   const events = (data.events || []).filter((e) => (s.event_ids || []).includes(e.id));
+  const peers = data.stocks.filter((x) => x.subsector === s.subsector && x.ticker !== s.ticker && x.tech)
+    .sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  const history = getBacktest()?.history?.[s.ticker] || [];
   const noFairWhy = s.subsector === "early"
     ? "Not used for early-stage companies: they have no steady profits to value."
     : s.notes?.find((n) => n.startsWith("Reports in"))
@@ -70,9 +78,9 @@ export default async function StockPage({ params }) {
 
   return (
     <>
-      <div className="page-head" style={{ paddingBottom: 12 }}>
+      <div className="page-head" style={{ alignItems: "flex-end" }}>
         <div>
-          <div className="small"><Link href="/">← All stocks</Link> · {s.subsector_label}</div>
+          <div className="small"><Link href="/screener/">All stocks</Link><span className="faint">, {s.subsector_label}</span></div>
           <h1 style={{ marginTop: 8 }}>{s.ticker} <span className="muted" style={{ fontWeight: 450 }}>{s.name}</span></h1>
           <div className="row" style={{ marginTop: 10, alignItems: "center", gap: 10 }}>
             <span style={{ fontSize: 22, fontWeight: 640 }} className="num">{money(t.price)}</span>
@@ -82,10 +90,11 @@ export default async function StockPage({ params }) {
             <span className="faint small">as of {date(t.date)}</span>
           </div>
         </div>
+        <StockActions ticker={s.ticker} price={t.price} peers={peers.slice(0, 3).map((x) => x.ticker)} />
       </div>
 
       <div className="stack">
-        <div className="card answer">
+        <div className="panel" style={{ padding: 22 }}>
           <div className="answer-top">
             <div>
               <div className="small muted">The short answer</div>
@@ -95,8 +104,8 @@ export default async function StockPage({ params }) {
             </div>
             <div className="answer-score">
               <div className="small muted">Quality score</div>
-              <div className="tile-value">{s.score != null ? num(s.score, 0) : "—"}<span className="muted" style={{ fontSize: 14 }}> / 100</span></div>
-              <div className="small faint">{s.band}{s.coverage < 1 ? ` · ${Math.round(s.coverage * 100)}% of inputs` : ""}</div>
+              <div className="big-v">{s.score != null ? num(s.score, 0) : "—"}<span className="muted" style={{ fontSize: 14 }}> / 100</span></div>
+              <div className="small faint">{s.band}{s.coverage < 1 ? `, from ${Math.round(s.coverage * 100)}% of inputs` : ""}</div>
             </div>
           </div>
           <PriceLadder price={t.price} zone={s.buy_zone} fair={s.fair_value} addMore={s.add_more} techZone={cz} />
@@ -108,9 +117,9 @@ export default async function StockPage({ params }) {
           </div>
         )}
 
-        <div className="card">
-          <div className="card-head"><h2>Good price to buy</h2><span className="faint small">Two ways of looking at it</span></div>
-          <div className="grid-2 even">
+        <div className="panel">
+          <div className="panel-head"><h2>Good price to buy</h2><span className="faint small">Two ways of looking at it</span></div>
+          <div className="cols-even">
             <ZoneBox
               title="From the company's numbers"
               zone={s.buy_zone}
@@ -128,9 +137,9 @@ export default async function StockPage({ params }) {
           </div>
         </div>
 
-        <div className="grid-2">
-          <div className="card">
-            <div className="card-head"><h2>Price chart</h2><span className="faint small">Weekly closes</span></div>
+        <div className="cols-2">
+          <div className="panel">
+            <div className="panel-head"><h2>Price chart</h2><span className="faint small">Weekly closes</span></div>
             <PriceChart
               history={s.history}
               zone={s.buy_zone || cz}
@@ -138,14 +147,19 @@ export default async function StockPage({ params }) {
               fair={s.fair_value}
             />
           </div>
-          <div className="card">
-            <div className="card-head"><h2>Technical analysis</h2><span className="faint small">What the price itself says</span></div>
+          <div className="panel">
+            <div className="panel-head"><h2>Technical analysis</h2><span className="faint small">What the price itself says</span></div>
             <TechPanel t={t} />
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-head"><h2>Why this quality score</h2><span className="faint small">Each part runs 0 to 100; 50 is neutral</span></div>
+        <div className="panel">
+          <div className="panel-head"><h2>Why this quality score</h2><span className="faint small">Each part runs 0 to 100; 50 is neutral</span></div>
+          <div className="cols-2" style={{ gridTemplateColumns: "minmax(0,1fr) minmax(0,2fr)", alignItems: "start" }}>
+          <div>
+            <Radar series={[{ name: s.ticker, color: "var(--s1)", values: Object.fromEntries(Object.entries(s.pillars || {}).map(([k, v]) => [k, v.score])) }]} />
+            <p className="small faint" style={{ textAlign: "center", marginTop: 4 }}>Further out is better; the dashed ring is neutral (50).</p>
+          </div>
           <div className="pillars">
             {ORDER.filter((p) => s.pillars?.[p]).map((p) => {
               const pl = s.pillars[p];
@@ -164,11 +178,11 @@ export default async function StockPage({ params }) {
                       {pl.score != null && <div className="fill" style={{ width: `${pl.score}%` }} />}
                       <div className="mid" />
                     </div>
-                    <div className="small faint">Counts for {pl.weight}% of the score · <span className="more">show details</span></div>
+                    <div className="small faint">Counts for {pl.weight}% of the score. <span className="more">Show details</span></div>
                   </summary>
                   <ul className="inputs">
                     {pl.inputs.map((inp, i) => (
-                      <li key={i}><span className="s">{num(inp.score, 0)}</span><span><strong style={{ fontWeight: 550, color: "var(--text)" }}>{inp.name}.</strong> {inp.why}</span></li>
+                      <li key={i}><span className="s">{num(inp.score, 0)}</span><span><strong style={{ fontWeight: 550, color: "var(--ink)" }}>{inp.name}.</strong> {inp.why}</span></li>
                     ))}
                     {pl.inputs.length === 0 && <li>No data for this part, so it is left out and the other parts count for more.</li>}
                   </ul>
@@ -176,14 +190,46 @@ export default async function StockPage({ params }) {
               );
             })}
           </div>
+          </div>
         </div>
 
-        <div className="card">
-          <div className="card-head"><h2>News and events that affect {s.ticker}</h2><Link href="/events/" className="small">All events</Link></div>
+        <div className="panel">
+          <div className="panel-head"><h2>Quality score over time</h2><span className="faint small">Every quarter for five years</span></div>
+          <ScoreHistory points={history} today={{ date: t.date, score: s.score, band: s.band, action: s.action, price: t.price }} />
+        </div>
+
+        {peers.length > 0 && (
+          <div className="panel flush">
+            <div className="panel-head" style={{ padding: "14px 16px 0" }}><h2>Other {s.subsector_label.toLowerCase()}</h2><Link className="small" href={`/compare/?t=${[s.ticker, ...peers.slice(0, 3).map((x) => x.ticker)].join(",")}`}>Compare side by side</Link></div>
+            <div className="table-wrap">
+              <table>
+                <thead><tr><th>Stock</th><th className="r">Price</th><th>Good price to buy</th><th className="r">Quality</th><th>Suggestion</th></tr></thead>
+                <tbody>
+                  {[s, ...peers].map((x) => {
+                    const r = goodRange(x);
+                    const c = priceCheck(x.tech?.price, r);
+                    return (
+                      <tr key={x.ticker} style={x.ticker === s.ticker ? { background: "var(--volt-soft)" } : undefined}>
+                        <td><Link href={`/stock/${x.ticker}/`} className="ticker">{x.ticker}</Link><div className="name">{x.ticker === s.ticker ? "This stock" : x.name}</div></td>
+                        <td className="r num">{money(x.tech?.price)}</td>
+                        <td>{r ? <div className="rangecell"><MiniRange price={x.tech?.price} range={r} /><span className={`small check ${c?.where}`}>{c?.text.replace(/^./, (q) => q.toUpperCase())}</span></div> : <span className="faint small">n/a</span>}</td>
+                        <td className="r num">{x.score != null ? num(x.score, 0) : "n/a"}</td>
+                        <td><ActionTagPeer action={x.action} /></td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        <div className="panel">
+          <div className="panel-head"><h2>News and events that affect {s.ticker}</h2><Link href="/events/" className="small">All events</Link></div>
           {events.length === 0 && <p className="muted">Nothing in the event log touches this stock right now.</p>}
           {events.map((e) => (
             <div className="event" key={e.id}>
-              <div className="event-meta"><span className="pill">{e.type}</span><span>{date(e.date)}</span><span>· {e.likelihood}</span></div>
+              <div className="event-meta"><span className="pill">{e.type}</span><span>{date(e.date)}</span><span>{e.likelihood}</span></div>
               <h3 style={{ marginTop: 6 }}>{e.title}</h3>
               <ul className="effects">
                 {e.effects.filter((x) => (x.tickers || []).includes(s.ticker) || (x.subsectors || []).includes(s.subsector)).map((x, i) => (
@@ -194,9 +240,9 @@ export default async function StockPage({ params }) {
           ))}
         </div>
 
-        <details className="card">
-          <summary className="card-head" style={{ marginBottom: 0, cursor: "pointer" }}>
-            <h2>Company numbers</h2><span className="faint small">From SEC filings, last twelve months to {date(f.period_end)} · show</span>
+        <details className="panel">
+          <summary className="panel-head" style={{ marginBottom: 0, cursor: "pointer" }}>
+            <h2>Company numbers</h2><span className="faint small">From SEC filings for the twelve months to {date(f.period_end)}. Click to show.</span>
           </summary>
           <div className="kv" style={{ marginTop: 14 }}>
             {[

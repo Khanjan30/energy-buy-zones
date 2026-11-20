@@ -64,10 +64,20 @@ def main(argv=None):
     config.save_json(config.WEB_DATA / "scores.json", data, compact=True)
     log(f"Wrote {len(data['stocks'])} stocks to web/data/scores.json")
 
+    # Daily signal log, so the site can show what changed since the last run.
+    sig_path = config.WEB_DATA / "signals.json"
+    sig = config.load_json(sig_path, {"days": {}})
+    sig["days"][asof.isoformat()] = {s["ticker"]: [s.get("score"), s.get("action"), (s.get("tech") or {}).get("price")]
+                                     for s in data["stocks"] if s.get("action")}
+    keep = sorted(sig["days"])[-260:]
+    sig["days"] = {k: sig["days"][k] for k in keep}
+    config.save_json(sig_path, sig, compact=True)
+
     bt_path = config.WEB_DATA / "backtest.json"
     if args.backtest or not bt_path.exists():
         log("Backtest")
         bt = backtest.run(uni, fins, prices, drivers, weights, today=asof, log=log)
+        bt["history"] = backtest.score_history(uni, fins, prices, drivers, weights, asof, log=log)
         config.save_json(bt_path, output.clean(bt), compact=True)
         log(f"Backtest: {bt['observations']} observations over {bt['dates']} dates")
     return 0

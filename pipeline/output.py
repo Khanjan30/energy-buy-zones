@@ -50,6 +50,7 @@ def stock_record(st, label, res, prices, fin):
         "buy_zone": res["buy_zone"], "add_more": res["add_more"],
         "pillars": res["pillars"], "hard_fails": res["hard_fails"], "coverage": res["coverage"],
         "event_ids": res.get("event_ids", []),
+        "market_cap": m.get("mcap"),
         "financials": {
             "currency": m.get("currency"), "period_end": snap.get("period_end"),
             "revenue": snap.get("revenue"), "net_income": snap.get("net_income"),

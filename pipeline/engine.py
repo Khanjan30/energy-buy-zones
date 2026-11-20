@@ -117,6 +117,7 @@ def metrics(stock, fin, prices, driver, asof):
     usd = fin.usd
     shares, eps = s["shares"], s["eps"]
     mcap = price * shares if (price and shares and usd) else None
+    m["mcap"] = mcap
     if usd:
         m["eps"] = eps
         m["pe"] = price / eps if (price and eps and eps > 0) else None

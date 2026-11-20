@@ -143,3 +143,11 @@ def test_runway_rule_skips_profitable_builders():
     assert scoring.hard_fails(utility, True, False, []) == []
     loser = {"runway": 0.3, "snapshot": {"ebitda": -1e8}}
     assert scoring.hard_fails(loser, False, False, [])[0][0] == "weak"
+
+
+def test_score_history_covers_recent_quarters():
+    uni, fin_recs, price_recs, drv_recs = fixtures.small_data()
+    fins, prices, drivers = engine.load_inputs(uni, fin_recs, price_recs, drv_recs)
+    h = backtest.score_history(uni, fins, prices, drivers, fixtures.small_weights(), date(2026, 11, 18), log=lambda m: None)
+    assert h["OIL0"][-1][0] == "2026-09-01"
+    assert len(h["OIL0"]) >= 16

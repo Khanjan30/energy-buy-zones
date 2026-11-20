@@ -22,7 +22,7 @@ export function priceCheck(price, r) {
     const p = Math.round((1 - price / r.low) * 100);
     // Far below a chart range means the stock is falling; far below a value range can mean bad news.
     const far = p > 15;
-    const note = far ? (r.source === "chart" ? ", falling fast" : ", check why it is so cheap") : "";
+    const note = far ? (r.source === "chart" ? ", falling fast" : ", check why") : "";
     return { where: far ? "far" : "below", pct: r.low / price - 1, text: p < 1 ? "just below the range" : `${p}% below the range${note}` };
   }
   if (price > r.high) {

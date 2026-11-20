@@ -11,6 +11,18 @@ A decision grid turns the two into one action: Buy, Buy small, Hold, Trim, Avoid
 
 > A research project and portfolio piece. Not financial advice.
 
+## Features
+
+- **Market overview.** A map of every stock grouped by sector and sized by company value, colored by today's move, price against its good buying range, or quality. Also a feed of suggestions that changed since the last run, the day's biggest moves, the best ideas, the latest events, and oil, gas, rates and uranium prices.
+- **Screener.** Six ready-made screens (for example "Good business, good price" and "Strong but oversold") plus filters for sector, suggestion, price against range, trend, momentum and quality. Sort any column and download the list as CSV.
+- **Stock pages.** A plain-language answer, a price scale, two buying ranges (from the company's numbers and from the chart), a price chart with 50-day and 200-day averages, technical analysis, the shape of the quality score, five years of score history, peers, and the events that touch the company.
+- **Portfolio.** Add or paste your holdings to see value, gain, today's move, average quality, sector split, concentration warnings, and what the model would trim, sell or add to.
+- **Watchlist.** Star stocks and track how far each is from a good price to buy.
+- **Compare.** Up to four stocks side by side, with a one-year chart starting each at 100 and their quality shapes overlaid.
+- **Quick search.** Press Cmd K or Ctrl K anywhere.
+
+Watchlist and portfolio are saved in your browser only. There are no accounts yet.
+
 ## What makes it different
 
 - **Energy-specific.** Weights change by group (oil producers, pipelines, utilities, power, nuclear fuel, grid equipment, solar and storage, early-stage). Each group is tied to its main driver: Brent crude, Henry Hub gas, the 10-year Treasury yield or uranium.

@@ -17,7 +17,7 @@ export default function EventsPage() {
             after its review date.
           </p>
         </div>
-        <a className="icon-btn" style={{ display: "inline-flex", alignItems: "center" }} href={`https://github.com/${REPO}/edit/main/data/events.json`}>
+        <a className="btn" style={{ display: "inline-flex", alignItems: "center" }} href={`https://github.com/${REPO}/edit/main/data/events.json`}>
           Edit events on GitHub
         </a>
       </div>

@@ -9,7 +9,7 @@ export default function Method() {
           <p className="muted">Version 1 of the formula. Built for owners who hold for years, not traders.</p>
         </div>
       </div>
-      <div className="card prose">
+      <div className="panel prose">
         <h2 style={{ marginTop: 0 }}>Two questions, asked separately</h2>
         <p>First: is this a business worth owning? That is the Ownership score, from 0 to 100. Second: is today&apos;s price a good one? That is the price position against fair value. The decision grid combines the two into one action.</p>
 

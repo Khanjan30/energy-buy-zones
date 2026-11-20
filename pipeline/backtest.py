@@ -110,3 +110,31 @@ def run(universe, fins, prices, drivers, weights, today=None, log=print):
             "Excess return is each stock's 12-month return minus the average of all stocks scored on the same date.",
         ],
     }
+
+
+def score_history(universe, fins, prices, drivers, weights, today, years=5, log=print):
+    """Quarterly scores for every stock up to today, for the score history chart.
+
+    Uses the same point-in-time data as the backtest. Policy and Outside pressure are
+    left out, so these scores can differ from today's full score.
+    """
+    days, y, mth = [], today.year - years, 3
+    while True:
+        dt = date(y, mth, 1)
+        if dt > today:
+            break
+        if dt >= today - timedelta(days=365 * years):
+            days.append(dt)
+        mth += 3
+        if mth > 12:
+            mth, y = 3, y + 1
+    out = {}
+    for dt in days:
+        results, _ = engine.score_universe(dt, universe, fins, prices, drivers, weights, [], {}, include_manual=False)
+        for t, res in results.items():
+            if res["score"] is None:
+                continue
+            out.setdefault(t, []).append([dt.isoformat(), round(res["score"], 1), res["band"], res["action"],
+                                          prices[t].on(dt)])
+    log(f"  score history: {len(days)} dates")
+    return out

@@ -49,7 +49,7 @@ export default function PriceChart({ history, zone, zoneLabel, fair }) {
 
   // Direct labels at the right end, nudged apart so they never overlap.
   const last = pts[pts.length - 1];
-  const ends = [["Price", last[1], "var(--accent)"], ["50-day", last[2], "var(--s2)"], ["200-day", last[3], "var(--s3)"]]
+  const ends = [["Price", last[1], "var(--s1)"], ["50-day", last[2], "var(--s2)"], ["200-day", last[3], "var(--s3)"]]
     .filter((e) => e[1] != null).map((e) => [...e, y(e[1])]).sort((a, b) => a[3] - b[3]);
   for (let i = 1; i < ends.length; i++) if (ends[i][3] - ends[i - 1][3] < 13) ends[i][3] = ends[i - 1][3] + 13;
 
@@ -65,7 +65,7 @@ export default function PriceChart({ history, zone, zoneLabel, fair }) {
 
   return (
     <div className="chart">
-      <div className="filters" style={{ marginBottom: 8 }}>
+      <div className="chips" style={{ marginBottom: 8 }}>
         {[1, 3].map((n) => (
           <button key={n} className={`chip ${span === n ? "on" : ""}`} onClick={() => { setSpan(n); setHover(null); }}>{n === 1 ? "1 year" : "3 years"}</button>
         ))}
@@ -74,20 +74,20 @@ export default function PriceChart({ history, zone, zoneLabel, fair }) {
         {yt.map((v) => (
           <g key={v}>
             <line x1={PAD.l} x2={W - PAD.r} y1={y(v)} y2={y(v)} stroke="var(--grid)" />
-            <text x={PAD.l - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="var(--text-3)">${v % 1 ? v.toFixed(1) : v}</text>
+            <text x={PAD.l - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="var(--ink-3)">${v % 1 ? v.toFixed(1) : v}</text>
           </g>
         ))}
-        {marks.map(([t, l]) => <text key={t} x={x(t)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--text-3)">{l}</text>)}
+        {marks.map(([t, l]) => <text key={t} x={x(t)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--ink-3)">{l}</text>)}
         {zone && <rect x={PAD.l} width={W - PAD.l - PAD.r} y={y(zone[1])} height={Math.max(1, y(zone[0]) - y(zone[1]))} fill="var(--zone)" />}
-        {fair != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(fair)} y2={y(fair)} stroke="var(--text-2)" strokeDasharray="5 4" strokeWidth="1.5" />}
+        {fair != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(fair)} y2={y(fair)} stroke="var(--ink-2)" strokeDasharray="5 4" strokeWidth="1.5" />}
         {hasMa && <path d={linePath(pts, x, y, 3)} fill="none" stroke="var(--s3)" strokeWidth="1.5" strokeDasharray="6 3" />}
         {hasMa && <path d={linePath(pts, x, y, 2)} fill="none" stroke="var(--s2)" strokeWidth="1.5" />}
-        <path d={linePath(pts, x, y, 1)} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-        {ends.map(([l, , c, yy]) => <text key={l} x={W - PAD.r + 6} y={yy + 4} fontSize="11" fill="var(--text-2)"><tspan fill={c}>●</tspan> {l}</text>)}
+        <path d={linePath(pts, x, y, 1)} fill="none" stroke="var(--s1)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        {ends.map(([l, , c, yy]) => <text key={l} x={W - PAD.r + 6} y={yy + 4} fontSize="11" fill="var(--ink-2)"><tspan fill={c}>●</tspan> {l}</text>)}
         {h && (
           <g>
-            <line x1={x(h[0])} x2={x(h[0])} y1={PAD.t} y2={H - PAD.b} stroke="var(--text-3)" />
-            <circle cx={x(h[0])} cy={y(h[1])} r="4.5" fill="var(--accent)" stroke="var(--surface)" strokeWidth="2" />
+            <line x1={x(h[0])} x2={x(h[0])} y1={PAD.t} y2={H - PAD.b} stroke="var(--ink-3)" />
+            <circle cx={x(h[0])} cy={y(h[1])} r="4.5" fill="var(--s1)" stroke="var(--surface)" strokeWidth="2" />
           </g>
         )}
         <rect x={PAD.l} y={PAD.t} width={W - PAD.l - PAD.r} height={H - PAD.t - PAD.b} fill="transparent" />
@@ -101,7 +101,7 @@ export default function PriceChart({ history, zone, zoneLabel, fair }) {
         </div>
       )}
       <div className="legend">
-        <span><i className="swatch line" style={{ background: "var(--accent)" }} /> Weekly price</span>
+        <span><i className="swatch line" style={{ background: "var(--s1)" }} /> Weekly price</span>
         {hasMa && <span><i className="swatch line" style={{ background: "var(--s2)" }} /> 50-day average (short-term trend)</span>}
         {hasMa && <span><i className="swatch dash" style={{ borderTopColor: "var(--s3)" }} /> 200-day average (long-term trend)</span>}
         {zone && <span><i className="swatch" style={{ background: "var(--zone)" }} /> {zoneLabel}</span>}
