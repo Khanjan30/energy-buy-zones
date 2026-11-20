@@ -3,6 +3,13 @@ name: Update data
 # Weekdays after the US close: pull prices, filings and drivers, score every stock,
 # commit the results. The commit triggers a Vercel rebuild of the site.
 on:
+  # Rescore right away when the model, its settings or the event log change.
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/**"
+      - "config/**"
+      - "data/events.json"
   schedule:
     - cron: "37 22 * * 1-5"
   workflow_dispatch:
@@ -25,6 +32,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - uses: actions/setup-python@v5
         with:
@@ -50,7 +59,9 @@ jobs:
           SEC_CONTACT_EMAIL: ${{ vars.SEC_CONTACT_EMAIL }}
         run: |
           # Backtest on manual runs (if ticked) and every Monday; it takes a few extra minutes.
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.backtest }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "push" ] && git diff --name-only HEAD~1 HEAD | grep -q "^pipeline/"; then
+            python -m pipeline.run --backtest
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.backtest }}" = "true" ]; then
             python -m pipeline.run --backtest
           elif [ "$(date -u +%u)" = "1" ]; then
             python -m pipeline.run --backtest
@@ -67,5 +78,6 @@ jobs:
             echo "No changes."
           else
             git commit -m "Data update $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main
             git push
           fi

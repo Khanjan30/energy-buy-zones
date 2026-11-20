@@ -5,38 +5,26 @@ import { date } from "@/lib/format";
 
 export default function Home() {
   const data = getScores();
-  if (!data) {
-    return (
-      <>
-        <div className="page-head">
-          <div>
-            <h1>Energy stocks, scored for long-term owners</h1>
-            <p className="muted">Quality, price, policy and outside pressure, combined into one decision per stock.</p>
-          </div>
-        </div>
-        <Pending />
-      </>
-    );
-  }
+  const head = (
+    <div className="page-head">
+      <div>
+        <h1>Which energy stocks are worth buying, and at what price?</h1>
+        <p className="muted">
+          {data
+            ? `${data.stocks.length} US-listed energy stocks, checked every weekday for long-term investors. Prices as of ${date(data.asof)}.`
+            : "US-listed energy stocks, checked every weekday for long-term investors."}
+        </p>
+      </div>
+    </div>
+  );
+  if (!data) return <>{head}<Pending /></>;
   // The table does not need price history; leave it out so the page stays light.
-  const rows = data.stocks.map(({ history, pillars, financials, fair_value_views, ...s }) => ({
-    ...s,
-    pillarScores: Object.fromEntries(Object.entries(pillars || {}).map(([k, v]) => [k, v.score])),
-  }));
+  const rows = data.stocks.map(({ history, pillars, financials, fair_value_views, sec_check, ...s }) => s);
   const tracked = data.tracked.map(({ history, ...t }) => t);
   return (
     <>
-      <div className="page-head">
-        <div>
-          <h1>Energy stocks, scored for long-term owners</h1>
-          <p className="muted">
-            {data.stocks.length} US-listed energy companies across {Object.keys(data.subsectors).length} groups. Each gets an
-            Ownership score from five pillars, a fair value from its own filings, and one action from the decision grid.
-            Data as of {date(data.asof)}.
-          </p>
-        </div>
-      </div>
-      <Dashboard rows={rows} tracked={tracked} drivers={data.drivers} subsectors={data.subsectors} missing={data.sources?.missing_keys || []} sample={data.sources?.sample} />
+      {head}
+      <Dashboard rows={rows} tracked={tracked} drivers={data.drivers} subsectors={data.subsectors} sample={data.sources?.sample} />
     </>
   );
 }

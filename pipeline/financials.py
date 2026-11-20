@@ -161,7 +161,8 @@ class Financials:
         if debt is not None and short:
             debt += short
         shares = self.latest("shares", asof, max_end)[0]
-        ebitda = (op + abs(dna)) if (op is not None and dna is not None) else op
+        # Without depreciation, operating income would understate cash earnings, so leave it blank.
+        ebitda = (op + abs(dna)) if (op is not None and dna is not None) else None
         fcf = (cfo - abs(capex)) if (cfo is not None and capex is not None) else None
         eps = (ni / shares) if (ni is not None and shares) else None
         return {

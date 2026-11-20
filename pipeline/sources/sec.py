@@ -20,14 +20,14 @@ REFRESH_DAYS = 7
 GAAP = {
     "revenue": ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax",
                 "RevenueFromContractWithCustomerIncludingAssessedTax", "SalesRevenueNet",
-                "RegulatedAndUnregulatedOperatingRevenue", "ElectricUtilityRevenue"],
+                "RegulatedAndUnregulatedOperatingRevenue", "RegulatedOperatingRevenue", "ElectricUtilityRevenue"],
     "net_income": ["NetIncomeLoss", "ProfitLoss", "NetIncomeLossAvailableToCommonStockholdersBasic",
                    "NetIncomeLossAllocatedToLimitedPartners"],
     "operating_income": ["OperatingIncomeLoss"],
     "pretax_income": ["IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
                       "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"],
     "dna": ["DepreciationDepletionAndAmortization", "DepreciationAndAmortization",
-            "DepreciationAmortizationAndAccretionNet", "Depreciation"],
+            "DepreciationAmortizationAndAccretionNet", "Depreciation", "CostDepreciationAmortizationAndDepletion"],
     "cfo": ["NetCashProvidedByUsedInOperatingActivities",
             "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets",
@@ -85,24 +85,45 @@ def ticker_to_cik(log=print):
         return (cached or {}).get("map", {})
 
 
+# Bump when extraction changes so cached filings are rebuilt.
+EXTRACT_VERSION = 2
+
+
 def _pick_series(tax_facts, tags, money=True):
-    """Return (tag, unit, entries) for the first tag that has data."""
+    """Merge every listed tag into one series, period by period.
+
+    Companies switch tag names over the years (a utility may move from Revenues to
+    RegulatedAndUnregulatedOperatingRevenue), so taking only the first tag with any data
+    can miss every recent filing. Earlier tags in the list win when two cover the same period.
+    Returns (tags used, unit, entries).
+    """
+    chosen_unit, used, merged = None, [], {}
     for tag in tags:
         node = tax_facts.get(tag)
         if not node:
             continue
         units = node.get("units", {})
-        if money:
-            # Prefer USD; otherwise take the first currency and flag it.
-            unit = "USD" if "USD" in units else next((u for u in units if "/" not in u and u not in SHARE_UNITS), None)
-        else:
-            unit = next((u for u in units if u in SHARE_UNITS), None)
-        if not unit:
-            continue
-        entries = [e for e in units[unit] if e.get("form") in GOOD_FORMS and "val" in e and "end" in e and "filed" in e]
-        if entries:
-            return tag, unit, entries
-    return None, None, []
+        if chosen_unit is None:
+            if money:
+                # Prefer USD; otherwise take the first currency and flag it.
+                chosen_unit = "USD" if "USD" in units else next((u for u in units if "/" not in u and u not in SHARE_UNITS), None)
+            else:
+                chosen_unit = next((u for u in units if u in SHARE_UNITS), None)
+            if chosen_unit is None:
+                continue
+        entries = [e for e in units.get(chosen_unit, []) if e.get("form") in GOOD_FORMS and "val" in e and "end" in e and "filed" in e]
+        added = 0
+        for e in entries:
+            key = (e.get("start"), e["end"])
+            if key not in merged:
+                merged.setdefault(key, [])
+            if not merged[key] or merged[key][0][0] == tag:
+                merged[key].append((tag, e))
+                added += 1
+        if added:
+            used.append(tag)
+    out = [e for rows in merged.values() for _, e in rows]
+    return ("+".join(used) if used else None), chosen_unit, out
 
 
 def extract(facts_json):
@@ -110,7 +131,7 @@ def extract(facts_json):
     gaap = facts.get("us-gaap", {})
     ifrs = facts.get("ifrs-full", {})
     taxonomy, tagmap = (gaap, GAAP) if len(gaap) >= len(ifrs) else (ifrs, IFRS)
-    out = {"taxonomy": "us-gaap" if taxonomy is gaap else "ifrs-full", "items": {}, "currency": None}
+    out = {"taxonomy": "us-gaap" if taxonomy is gaap else "ifrs-full", "items": {}, "currency": None, "version": EXTRACT_VERSION}
     for item, tags in tagmap.items():
         tag, unit, entries = _pick_series(taxonomy, tags, money=(item != "shares"))
         if not entries:
@@ -134,7 +155,7 @@ def extract(facts_json):
 def update(ticker, cik, log=print):
     path = config.FIN_CACHE / f"{ticker}.json"
     cached = config.load_json(path)
-    if cached and cached.get("fetched") and \
+    if cached and cached.get("version") == EXTRACT_VERSION and cached.get("fetched") and \
             datetime.fromisoformat(cached["fetched"]) > datetime.utcnow() - timedelta(days=REFRESH_DAYS):
         return cached
     try:

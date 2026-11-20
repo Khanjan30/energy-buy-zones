@@ -111,3 +111,35 @@ def test_monthly_uranium_value_stays_usable_for_weeks():
     assert drv.series.on(date(2026, 11, 19)) == 99.0
     daily = engine.Driver({"name": "brent", "series": [["2026-10-31", 80.0]]})
     assert daily.series.on(date(2026, 11, 19)) is None
+
+
+def test_technicals_include_trend_rsi_and_chart_range():
+    from pipeline.financials import Prices
+    rising = Prices([[f"2025-{1 + i // 28:02d}-{1 + i % 28:02d}", 100 + i * 0.5] for i in range(300)])
+    t = engine.technicals(rising, date(2025, 11, 30))
+    assert t["trend"] == "Uptrend"
+    assert t["rsi14"] > 70
+    assert t["tech_zone"][1] == t["ma200"] and t["tech_zone_status"] == "Above range"
+    assert t["ret_1m"] > 0
+
+
+def test_sec_tags_are_merged_when_a_company_switches_names():
+    from pipeline.sources.sec import _pick_series
+    def fact(start, end, val, filed):
+        return {"start": start, "end": end, "val": val, "filed": filed, "form": "10-K"}
+    tax = {
+        "Revenues": {"units": {"USD": [fact("2017-01-01", "2017-12-31", 100, "2018-02-01")]}},
+        "RegulatedAndUnregulatedOperatingRevenue": {"units": {"USD": [
+            fact("2017-01-01", "2017-12-31", 999, "2018-02-01"), fact("2025-01-01", "2025-12-31", 300, "2026-02-01")]}},
+    }
+    tag, unit, entries = _pick_series(tax, ["Revenues", "RegulatedAndUnregulatedOperatingRevenue"])
+    vals = sorted((e["end"], e["val"]) for e in entries)
+    assert vals == [("2017-12-31", 100), ("2025-12-31", 300)]
+    assert unit == "USD" and "RegulatedAndUnregulatedOperatingRevenue" in tag
+
+
+def test_runway_rule_skips_profitable_builders():
+    utility = {"runway": 0.3, "snapshot": {"ebitda": 9e9}}
+    assert scoring.hard_fails(utility, True, False, []) == []
+    loser = {"runway": 0.3, "snapshot": {"ebitda": -1e8}}
+    assert scoring.hard_fails(loser, False, False, [])[0][0] == "weak"

@@ -14,6 +14,30 @@ class Driver:
         self.series = Prices(rec["series"], max_gap=45 if self.name == "uranium" else 10)
 
 
+def rsi(closes, n=14):
+    """Relative strength index with Wilder smoothing. Below 30 reads as oversold, above 70 as overbought."""
+    if len(closes) < n + 1:
+        return None
+    gains, losses = [], []
+    for a, b in zip(closes[:-1], closes[1:]):
+        ch = b - a
+        gains.append(max(ch, 0.0))
+        losses.append(max(-ch, 0.0))
+    ag = sum(gains[:n]) / n
+    al = sum(losses[:n]) / n
+    for g, l in zip(gains[n:], losses[n:]):
+        ag = (ag * (n - 1) + g) / n
+        al = (al * (n - 1) + l) / n
+    if al == 0:
+        return 100.0
+    return 100 - 100 / (1 + ag / al)
+
+
+def _ret(prices, asof, last, days):
+    then = prices.on(asof - timedelta(days=days))
+    return round(last / then - 1, 4) if then else None
+
+
 def technicals(prices, asof):
     day, last = prices.last(asof)
     if last is None:
@@ -23,11 +47,29 @@ def technicals(prices, asof):
     year = prices.window(asof, 365)
     prev = prices.window(asof, 10)
     change = (prev[-1] / prev[-2] - 1) * 100 if len(prev) >= 2 and prev[-2] else None
+    r = rsi(prices.window(asof, 400)[-250:])
+    if ma50 and ma200:
+        trend = "Uptrend" if last > ma50 > ma200 else "Downtrend" if last < ma50 < ma200 else "Mixed"
+    else:
+        trend = None
+    # Chart-based buy range: a pullback to the 200-day average, down to 8% below it.
+    zone = [round(ma200 * 0.92, 2), round(ma200, 2)] if ma200 else None
+    if zone:
+        zone_status = "Above range" if last > zone[1] else "Below range" if last < zone[0] else "In range"
+    else:
+        zone_status = None
+    hi, lo = (max(year), min(year)) if year else (None, None)
     return {
         "date": day.isoformat(), "price": last, "change_pct": round(change, 2) if change is not None else None,
         "ma50": round(ma50, 2) if ma50 else None, "ma200": round(ma200, 2) if ma200 else None,
-        "hi52": max(year) if year else None, "lo52": min(year) if year else None,
+        "hi52": hi, "lo52": lo,
         "above_ma50": bool(ma50 and last > ma50), "below_ma200": bool(ma200 and last < ma200),
+        "rsi14": round(r, 1) if r is not None else None,
+        "trend": trend,
+        "ret_1m": _ret(prices, asof, last, 30), "ret_3m": _ret(prices, asof, last, 91), "ret_1y": _ret(prices, asof, last, 365),
+        "from_hi52": round(last / hi - 1, 4) if hi else None,
+        "range_pos": round((last - lo) / (hi - lo), 3) if hi and lo and hi > lo else None,
+        "tech_zone": zone, "tech_zone_status": zone_status,
     }
 
 

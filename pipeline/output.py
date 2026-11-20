@@ -25,7 +25,8 @@ def weekly_history(prices: Prices, asof: date, years=3):
         day = asof - timedelta(weeks=k)
         p = prices.on(day)
         if p is not None:
-            out.append([day.isoformat(), round(p, 2)])
+            m50, m200 = prices.moving_average(day, 50), prices.moving_average(day, 200)
+            out.append([day.isoformat(), round(p, 2), round(m50, 2) if m50 else None, round(m200, 2) if m200 else None])
     return out
 
 
@@ -58,6 +59,9 @@ def stock_record(st, label, res, prices, fin):
             "leverage": m.get("leverage"), "rev_cagr": m.get("rev_cagr"),
         },
         "notes": notes,
+        # Which SEC tags were found and how recent each one is; used to track down data gaps.
+        "sec_check": {k: [v.get("tag"), max((f[1] for f in v.get("facts", [])), default=None)]
+                      for k, v in ((fin.rec.get("items") or {}).items() if fin else [])},
         "history": weekly_history(prices, date.fromisoformat(m["tech"]["date"])) if m.get("tech") else [],
     }
 

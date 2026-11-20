@@ -232,7 +232,11 @@ def ownership(pillars, weights):
 def hard_fails(m, regulated, early, policy_effects):
     fails = []
     runway = m.get("runway")
-    if runway is not None and runway < 1:
+    ebitda = (m.get("snapshot") or {}).get("ebitda")
+    # Only for companies that lose money. Profitable builders such as utilities spend more than
+    # they bring in on purpose and fund it with debt, which the leverage rule already checks.
+    burning = early or (ebitda is not None and ebitda <= 0)
+    if burning and runway is not None and runway < 1:
         fails.append(("weak", "Cash runway is under 1 year."))
     lev = m.get("leverage")
     limit = 8 if regulated else 6

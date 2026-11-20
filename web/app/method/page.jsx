@@ -34,7 +34,7 @@ export default function Method() {
 
         <h2>Hard fails</h2>
         <ul>
-          <li>Less than one year of cash left caps the score at 45.</li>
+          <li>For companies that lose money, less than one year of cash left caps the score at 45. Profitable companies that borrow to build, like utilities, are checked by the debt rule instead.</li>
           <li>Debt above 6 times cash earnings (8 times for regulated utilities and pipelines) caps the score at 69.</li>
           <li>A −2 event that is already happening and hits the core business caps the score at 69.</li>
           <li>A pending takeover pauses scoring; the stock moves to the tracked list.</li>
@@ -52,6 +52,9 @@ export default function Method() {
             <tr><td>Over 130%</td><td>Stretched</td></tr>
           </tbody>
         </table>
+
+        <h2>The chart-based buying range</h2>
+        <p>Every stock also gets a range from its price chart: from the 200-day average price down to 8% below it. Long-term buyers often wait for dips to this line. It is the only range shown for early-stage companies and for companies whose filings are not usable yet. A price far below the range means the stock is falling; the trend reading on each stock page says whether it has steadied. This rule is not part of the backtest.</p>
 
         <h2>The decision grid</h2>
         <table>
