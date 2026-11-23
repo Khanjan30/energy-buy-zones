@@ -40,7 +40,10 @@ export default function Portfolio({ stocks, subsectors }) {
   const day = known.reduce((a, r) => a + (r.dayMove || 0), 0);
   const scored = known.filter((r) => r.s?.score != null);
   const wq = scored.length ? scored.reduce((a, r) => a + r.s.score * r.value, 0) / scored.reduce((a, r) => a + r.value, 0) : null;
-  const bySector = keys.map((k, i) => ({ k, label: subsectors[k], color: SECTOR_COLOR[i % 8], value: known.filter((r) => r.s.subsector === k).reduce((a, r) => a + r.value, 0) })).filter((x) => x.value > 0).sort((a, b) => b.value - a.value);
+  const bySector = [
+    ...keys.map((k, i) => ({ k, label: subsectors[k], color: SECTOR_COLOR[i % 8], value: known.filter((r) => r.s.subsector === k).reduce((a, r) => a + r.value, 0) })),
+    { k: "_tracked", label: "Tracked, not scored", color: "var(--ink-3)", value: known.filter((r) => r.s.tracked).reduce((a, r) => a + r.value, 0) },
+  ].filter((x) => x.value > 0).sort((a, b) => b.value - a.value);
   const review = rows.filter((r) => ["trim", "sell"].includes(ACTION_GROUP[r.s?.action]));
   const addMore = rows.filter((r) => ACTION_GROUP[r.s?.action] === "buy" && ["in", "below"].includes(priceCheck(r.price, r.s && goodRange(r.s))?.where));
   const top = known.length ? [...known].sort((a, b) => b.value - a.value)[0] : null;
@@ -51,7 +54,7 @@ export default function Portfolio({ stocks, subsectors }) {
     const shares = Number(form.shares), cost = Number(form.cost);
     if (!t || !(shares > 0) || !(cost >= 0)) { setMsg("Enter a ticker, a number of shares above zero, and the average price you paid."); return; }
     upsert({ ticker: t, shares, cost });
-    setMsg(by[t] ? `Saved ${t}.` : `Saved ${t}. It is not one of the 56 stocks in the model, so it has no price or score here.`);
+    setMsg(by[t] ? `Saved ${t}.` : `Saved ${t}. It is outside the energy model, so it has no price or score here.`);
     setForm({ ticker: "", shares: "", cost: "" });
   }
   function importList() {
@@ -131,7 +134,7 @@ export default function Portfolio({ stocks, subsectors }) {
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.ticker}>
-                    <td>{r.s ? <Link href={`/stock/${r.ticker}/`} className="ticker">{r.ticker}</Link> : <span className="ticker">{r.ticker}</span>}<div className="name">{r.s?.name || "Not covered by the model"}</div></td>
+                    <td>{r.s && !r.s.tracked ? <Link href={`/stock/${r.ticker}/`} className="ticker">{r.ticker}</Link> : <span className="ticker">{r.ticker}</span>}<div className="name">{r.s?.name || "Outside the energy model, no price"}</div></td>
                     <td className="r num">{num(r.shares, r.shares % 1 ? 3 : 0)}</td>
                     <td className="r num">{money(r.cost)}</td>
                     <td className="r num">{money(r.price)}</td>
@@ -139,7 +142,7 @@ export default function Portfolio({ stocks, subsectors }) {
                     <td className={`r num ${r.gain >= 0 ? "up" : "down"}`}>{r.gain != null ? <>{money(r.gain, 0)}<div className="tiny">{pct(r.gain / r.costBasis, 1, true)}</div></> : "n/a"}</td>
                     <td className="r num">{r.value != null && total ? pct(r.value / total, 1) : "n/a"}</td>
                     <td className="r num">{r.s?.score != null ? Math.round(r.s.score) : "n/a"}</td>
-                    <td>{r.s ? <ActionTag action={r.s.action} /> : <span className="faint small">n/a</span>}</td>
+                    <td>{r.s?.tracked ? <span className="small muted">{r.s.status === "deal_pending" ? "Takeover pending" : "Not scored"}</span> : r.s ? <ActionTag action={r.s.action} /> : <span className="faint small">n/a</span>}</td>
                     <td><button className="btn sm" onClick={() => remove(r.ticker)} aria-label={`Remove ${r.ticker}`}>Remove</button></td>
                   </tr>
                 ))}

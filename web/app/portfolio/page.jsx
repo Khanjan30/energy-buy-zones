@@ -14,7 +14,7 @@ export default function PortfolioPage() {
           <p>See your energy holdings the way the model sees them: what they are worth, how much you have made, and which ones it would trim, sell or add to.</p>
         </div>
       </div>
-      {data ? <Portfolio stocks={data.stocks.map(slim)} subsectors={data.subsectors} /> : <Pending />}
+      {data ? <Portfolio stocks={[...data.stocks.map(slim), ...(data.tracked || []).map((t) => ({ ...slim(t), tracked: true, note: t.note, status: t.status }))]} subsectors={data.subsectors} /> : <Pending />}
     </>
   );
 }

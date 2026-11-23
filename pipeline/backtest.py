@@ -68,8 +68,13 @@ def run(universe, fins, prices, drivers, weights, today=None, log=print):
             r["excess"] = r["fwd"] - avg_all
             r["excess_med"] = r["fwd"] - med_all
             peers = by_sub.get(r["sub"], [])
-            # Against the middle stock of its own sector, so a sector-wide boom or bust cancels out.
-            r["excess_sec"] = r["fwd"] - (median(peers) if len(peers) >= 3 else med_all)
+            # Share of same-sector peers this stock beat over the year (0.5 is the middle), so a
+            # sector-wide boom or bust cancels out. Needs at least 3 stocks in the sector that date.
+            if len(peers) >= 3:
+                beat = sum(1 for x in peers if x < r["fwd"]) + 0.5 * (sum(1 for x in peers if x == r["fwd"]) - 1)
+                r["rank_sec"] = beat / (len(peers) - 1)
+            else:
+                r["rank_sec"] = None
         three = [r["fwd3"] for r in batch if r["fwd3"] is not None]
         med3 = median(three) if len(three) >= 5 else None
         for r in batch:
@@ -156,19 +161,24 @@ def score_history(universe, fins, prices, drivers, weights, today, years=5, log=
     return out
 
 
+def _avg(xs):
+    xs = [x for x in xs if x is not None]
+    return mean(xs) if xs else None
+
+
 def _med(xs):
     xs = [x for x in xs if x is not None]
     return median(xs) if xs else None
 
 
-def _versus(rows, key, a, b, label, how, agg=median):
+def _versus(rows, key, a, b, label, how, agg=median, unit="pts"):
     """Compare the middle result of group a against group b on one measure."""
     ra = [r[key] for r in rows if a(r) and r.get(key) is not None]
     rb = [r[key] for r in rows if b(r) and r.get(key) is not None]
     if len(ra) < 10 or len(rb) < 10:
-        return {"label": label, "how": how, "passed": None, "a": None, "b": None, "na": len(ra), "nb": len(rb)}
+        return {"label": label, "how": how, "passed": None, "a": None, "b": None, "na": len(ra), "nb": len(rb), "unit": unit}
     ma, mb = agg(ra), agg(rb)
-    return {"label": label, "how": how, "passed": ma > mb, "a": ma, "b": mb, "spread": ma - mb, "na": len(ra), "nb": len(rb)}
+    return {"label": label, "how": how, "passed": ma > mb, "a": ma, "b": mb, "spread": ma - mb, "na": len(ra), "nb": len(rb), "unit": unit}
 
 
 def diagnostics(rows, universe):
@@ -181,14 +191,14 @@ def diagnostics(rows, universe):
     quality = [
         _versus(rows, "excess", strong, weak, "As first run", "Average 12-month return against the average of every stock, early-stage included", agg=mean),
         _versus(rows, "excess_med", strong, weak, "Against the middle stock", "Median return against the median stock, so a few huge winners count once each"),
-        _versus(rows, "excess_sec", strong, weak, "Within each sector", "Against the middle stock of the same sector, so an oil boom or an AI-power boom cancels out"),
-        _versus(rows, "excess_sec", not_early(strong), not_early(weak), "Within each sector, no early-stage", "Same, with early-stage companies left out, since the formula is not built for them"),
+        _versus(rows, "rank_sec", strong, weak, "Within each sector", "Share of same-sector stocks each one beat over the year (50% is average), so an oil boom or an AI-power boom cancels out", agg=mean, unit="rank"),
+        _versus(rows, "rank_sec", not_early(strong), not_early(weak), "Within each sector, no early-stage", "Same, with early-stage companies left out, since the formula is not built for them", agg=mean, unit="rank"),
         _versus(rows, "excess3", not_early(strong), not_early(weak), "Over three years", "Three-year return against the middle stock, early-stage left out; fewer dates qualify"),
     ]
     price = [
         _versus(rows, "excess_med", cheap, rich, "Against the middle stock", "Median return, cheap against expensive"),
-        _versus(rows, "excess_sec", cheap, rich, "Within each sector", "Against the middle stock of the same sector"),
-        _versus(rows, "excess_sec", not_early(cheap), not_early(rich), "Within each sector, no early-stage", "Same, early-stage left out"),
+        _versus(rows, "rank_sec", cheap, rich, "Within each sector", "Share of same-sector stocks each one beat over the year", agg=mean, unit="rank"),
+        _versus(rows, "rank_sec", not_early(cheap), not_early(rich), "Within each sector, no early-stage", "Same, early-stage left out", agg=mean, unit="rank"),
         _versus(rows, "excess3", not_early(cheap), not_early(rich), "Over three years", "Three-year return against the middle stock"),
     ]
     labels = {k: v["label"] for k, v in universe["subsectors"].items()}
@@ -200,14 +210,14 @@ def diagnostics(rows, universe):
         by_sector.append({
             "sector": label, "key": k, "n": len(rs),
             "median_return": _med([r["fwd"] for r in rs]),
-            "strong": _med([r["excess_sec"] for r in rs if strong(r)]), "n_strong": sum(1 for r in rs if strong(r)),
-            "weak": _med([r["excess_sec"] for r in rs if weak(r)]), "n_weak": sum(1 for r in rs if weak(r)),
+            "strong": _avg([r["rank_sec"] for r in rs if strong(r)]), "n_strong": sum(1 for r in rs if strong(r) and r["rank_sec"] is not None),
+            "weak": _avg([r["rank_sec"] for r in rs if weak(r)]), "n_weak": sum(1 for r in rs if weak(r) and r["rank_sec"] is not None),
         })
     # How often, date by date, Strong beat Weak inside sectors (early-stage left out).
     wins = total = 0
     for dt in sorted({r["date"] for r in rows}):
         d = [r for r in rows if r["date"] == dt and r["sub"] != "early"]
-        a, b = _med([r["excess_sec"] for r in d if strong(r)]), _med([r["excess_sec"] for r in d if weak(r)])
+        a, b = _avg([r["rank_sec"] for r in d if strong(r)]), _avg([r["rank_sec"] for r in d if weak(r)])
         if a is not None and b is not None:
             total += 1
             wins += a > b

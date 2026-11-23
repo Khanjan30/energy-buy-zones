@@ -6,8 +6,12 @@ import { date, pct } from "@/lib/format";
 export const metadata = { title: "Backtest · Energy Buy Zones" };
 
 const pts = (v) => (v == null ? "n/a" : `${v > 0 ? "+" : ""}${(v * 100).toFixed(1)} pts`);
+const val = (t, v) => (v == null ? "n/a" : t.unit === "rank" ? `beat ${Math.round(v * 100)}%` : pts(v));
+// A gap this small could easily be luck, so it is shown as a tie rather than a pass or fail.
+const tooClose = (t) => t.a != null && t.b != null && Math.abs(t.a - t.b) < (t.unit === "rank" ? 0.02 : 0.01);
 
-function Verdict({ passed }) {
+function Verdict({ passed, tie }) {
+  if (tie) return <span className="tag hold"><span className="dot" aria-hidden /><span className="tag-icon" aria-hidden>=</span>Too close to call</span>;
   const cls = passed === true ? "buy" : passed === false ? "sell" : "none";
   return (
     <span className={`tag ${cls}`}>
@@ -60,7 +64,8 @@ export default function BacktestPage() {
   const q = dg?.quality_tests || [];
   const p = dg?.price_tests || [];
   const fairQ = q.find((t) => t.label === "Within each sector, no early-stage");
-  const anyFair = q.slice(1).some((t) => t.passed);
+  const anyFair = q.slice(1).some((t) => t.passed && !tooClose(t));
+  const fairQClear = fairQ?.passed && !tooClose(fairQ);
   const sectors = (dg?.by_sector || []).filter((s) => s.median_return != null).sort((a, b) => b.median_return - a.median_return);
   const winners = dg?.top_winners || [];
   const brokenWinners = winners.filter((w) => w.band === "Broken" || w.band === "Weak").length;
@@ -150,7 +155,7 @@ export default function BacktestPage() {
                 <thead><tr><th>Promise 1: good businesses do better</th><th>How it is measured</th><th className="r">Strong</th><th className="r">Weak or Broken</th><th>Result</th></tr></thead>
                 <tbody>
                   {q.map((t) => (
-                    <tr key={t.label}><td><strong style={{ fontWeight: 600 }}>{t.label}</strong></td><td className="small muted" style={{ maxWidth: 360 }}>{t.how}</td><td className="r num">{pts(t.a)}</td><td className="r num">{pts(t.b)}</td><td><Verdict passed={t.passed} /></td></tr>
+                    <tr key={t.label}><td><strong style={{ fontWeight: 600 }}>{t.label}</strong></td><td className="small muted" style={{ maxWidth: 360 }}>{t.how}</td><td className="r num">{val(t, t.a)}</td><td className="r num">{val(t, t.b)}</td><td><Verdict passed={t.passed} tie={tooClose(t)} /></td></tr>
                   ))}
                 </tbody>
               </table>
@@ -158,13 +163,13 @@ export default function BacktestPage() {
                 <thead><tr><th>Promise 2: buying cheap does better</th><th>How it is measured</th><th className="r">Cheap</th><th className="r">Expensive</th><th>Result</th></tr></thead>
                 <tbody>
                   {p.map((t) => (
-                    <tr key={t.label}><td><strong style={{ fontWeight: 600 }}>{t.label}</strong></td><td className="small muted" style={{ maxWidth: 360 }}>{t.how}</td><td className="r num">{pts(t.a)}</td><td className="r num">{pts(t.b)}</td><td><Verdict passed={t.passed} /></td></tr>
+                    <tr key={t.label}><td><strong style={{ fontWeight: 600 }}>{t.label}</strong></td><td className="small muted" style={{ maxWidth: 360 }}>{t.how}</td><td className="r num">{val(t, t.a)}</td><td className="r num">{val(t, t.b)}</td><td><Verdict passed={t.passed} tie={tooClose(t)} /></td></tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <p className="small muted" style={{ padding: "12px 18px 16px" }}>
-              {fairQ?.passed
+              {fairQClear
                 ? "Measured within each sector and without early-stage names, high-quality stocks did beat low-quality ones. The formula picks better companies inside a sector; it does not predict which sector will be hot."
                 : anyFair
                   ? "Some fairer versions pass and others do not, so the evidence is mixed. Treat the scores as one input, not a signal to follow on its own."
@@ -176,7 +181,7 @@ export default function BacktestPage() {
 
         {dg && (
           <div className="panel flush">
-            <div className="panel-head" style={{ padding: "16px 18px 0" }}><h2>Sector by sector</h2><span className="small faint">Against the middle stock of the same sector, one year</span></div>
+            <div className="panel-head" style={{ padding: "16px 18px 0" }}><h2>Sector by sector</h2><span className="small faint">Share of same-sector stocks beaten over one year; 50% is average</span></div>
             <div className="table-wrap">
               <table>
                 <thead><tr><th>Sector</th><th className="r">Middle return</th><th className="r">Strong</th><th className="r">Weak or Broken</th><th>Does quality help here?</th></tr></thead>
@@ -187,9 +192,9 @@ export default function BacktestPage() {
                       <tr key={x.key}>
                         <td>{labels[x.key] || x.sector}<div className="tiny faint">{x.n} checks</div></td>
                         <td className={`r num ${x.median_return >= 0 ? "up" : "down"}`}>{pct(x.median_return, 1, true)}</td>
-                        <td className="r num">{pts(x.strong)} <span className="tiny faint">({x.n_strong})</span></td>
-                        <td className="r num">{pts(x.weak)} <span className="tiny faint">({x.n_weak})</span></td>
-                        <td>{ok ? <Verdict passed={x.strong > x.weak} /> : <span className="small faint">Too few cases</span>}</td>
+                        <td className="r num">{x.strong != null ? `${Math.round(x.strong * 100)}%` : "n/a"} <span className="tiny faint">({x.n_strong})</span></td>
+                        <td className="r num">{x.weak != null ? `${Math.round(x.weak * 100)}%` : "n/a"} <span className="tiny faint">({x.n_weak})</span></td>
+                        <td>{ok ? <Verdict passed={x.strong > x.weak} tie={Math.abs(x.strong - x.weak) < 0.02} /> : <span className="small faint">Too few cases</span>}</td>
                       </tr>
                     );
                   })}
