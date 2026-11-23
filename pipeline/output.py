@@ -41,6 +41,10 @@ def stock_record(st, label, res, prices, fin):
     if res["coverage"] < 1:
         notes.append(f"Scored on {round(res['coverage'] * 100)}% of the pillar weight; missing inputs are left out rather than guessed.")
     for last_before, n in (getattr(fin, "splits", None) or []):
+        # Only splits that touch the five-year valuation window, and not early-stage companies,
+        # where big share sales can look like a split.
+        if st["subsector"] == "early" or last_before < f"{date.today().year - 6}":
+            continue
         kind = f"{int(n)}-for-1 stock split" if n >= 1 else f"1-for-{round(1 / n)} reverse split"
         notes.append(f"Share counts before {last_before[:7]} are adjusted for a {kind}, so past earnings per share line up with today's prices.")
     return {
