@@ -55,7 +55,8 @@ def factor_ranks(day_rows):
     """For one date: {factor: {ticker: percentile}} across all stocks with a value."""
     out = {}
     for k, *_ in FACTORS:
-        vals = {r["ticker"]: r[k] for r in day_rows if r.get(k) is not None and not (isinstance(r[k], float) and math.isnan(r[k]))}
+        vals = {r["ticker"]: r[k] for r in day_rows
+                if isinstance(r.get(k), (int, float)) and not isinstance(r[k], bool) and math.isfinite(r[k])}
         if len(vals) >= 5:
             out[k] = ranks(vals)
     return out

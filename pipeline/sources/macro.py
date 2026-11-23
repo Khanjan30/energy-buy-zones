@@ -228,21 +228,41 @@ def load_epu(log):
     return _save("epu", series, src)
 
 
+CPU_REPO = "dkaenzig/climate-policy-uncertainty-index"
+
+
+def parse_cpu_xlsx(content):
+    """Rows like ('2026M04', narrow, broad, ...) on the 'data' sheet. Returns {'YYYY-MM': narrow index}."""
+    import openpyxl
+    wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+    ws = wb["data"] if "data" in wb.sheetnames else wb.worksheets[-1]
+    rows = ws.iter_rows(values_only=True)
+    head = [str(h or "").strip().lower() for h in next(rows)]
+    col = head.index("cpu_index_narrow") if "cpu_index_narrow" in head else 1
+    out = {}
+    for r in rows:
+        d, v = r[0], r[col] if len(r) > col else None
+        if not isinstance(d, str) or "M" not in d or not isinstance(v, (int, float)):
+            continue
+        y, m = d.split("M")
+        out[f"{int(y):04d}-{int(m):02d}"] = float(v)
+    return out
+
+
 def load_cpu(log):
+    """Climate policy uncertainty (Gavriilidis, Kanzig, Raghavan and Stock), kept on GitHub as cpu_YYYY-MM.xlsx."""
     old = config.load_json(_path("cpu"))
     if _fresh(old, 7):
         return old
-    last_err = None
-    for url in ("https://www.policyuncertainty.com/media/CPU%20index.csv",
-                "https://www.policyuncertainty.com/media/CPU_index.csv"):
-        try:
-            text = _get(url).text
-            series = parse_monthly_csv(text, date_cols=("date",), value_cols=("cpu_index", "cpu"))
-            if len(series) >= 100:
-                return _save("cpu", series, url)
-        except Exception as e:  # try the next spelling
-            last_err = e
-    raise ValueError(f"climate policy uncertainty file not found ({last_err})")
+    listing = _get(f"https://api.github.com/repos/{CPU_REPO}/contents").json()
+    files = sorted(f["name"] for f in listing if f.get("name", "").startswith("cpu_") and f["name"].endswith(".xlsx"))
+    if not files:
+        raise ValueError("climate policy uncertainty file not found in the repository")
+    url = f"https://raw.githubusercontent.com/{CPU_REPO}/main/{files[-1]}"
+    series = parse_cpu_xlsx(_get(url).content)
+    if len(series) < 100:
+        raise ValueError(f"climate policy uncertainty file had only {len(series)} months")
+    return _save("cpu", series, url)
 
 
 def load_treasury(log):

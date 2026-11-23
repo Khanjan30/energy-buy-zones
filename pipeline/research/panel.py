@@ -178,7 +178,8 @@ def build(universe, fins, prices, drivers, weights, macro, start=date(2012, 1, 1
             lev = m.get("leverage")
             row["q_leverage"] = -min(lev, 20) if lev is not None and math.isfinite(lev) else None
             row["q_coverage"] = min(m["coverage"], 50) if m.get("coverage") is not None else None
-            row["q_fcf_years"] = m.get("fcf_pos")
+            pos, n_years = m.get("fcf_pos") or (None, 0)
+            row["q_fcf_years"] = (pos / n_years) if (pos is not None and n_years >= 2) else None
             rev, op = snap.get("revenue"), snap.get("operating_income")
             row["q_margin"] = (op / rev) if (rev and op is not None and rev > 0) else None
             # growth

@@ -77,3 +77,32 @@ def test_beta_learns_a_known_reaction():
     ys = {k: 0.02 * xs[k] for k in keys}
     b = panel.beta(ys, xs, keys)
     assert b > 0.015
+
+
+
+def test_panel_values_are_plain_numbers():
+    from pipeline.research.strategies import FACTORS
+    uni, fins, prices, drivers = small()
+    rows = panel.build(uni, fins, prices, drivers, fixtures.small_weights(), fake_macro(), start=date(2020, 1, 1),
+                       today=date(2026, 11, 18), log=lambda m: None)
+    for r in rows:
+        for k, *_ in FACTORS:
+            v = r.get(k)
+            assert v is None or (isinstance(v, (int, float)) and not isinstance(v, bool)), (k, v)
+    assert any(r.get("q_fcf_years") is not None for r in rows)
+
+
+def test_climate_policy_spreadsheet_parser():
+    import io
+    import openpyxl
+    from pipeline.sources.macro import parse_cpu_xlsx
+    wb = openpyxl.Workbook()
+    wb.active.title = "readme"
+    ws = wb.create_sheet("data")
+    ws.append(["date", "cpu_index_narrow", "cpu_index_broad"])
+    ws.append(["2026M03", 369.5, 300.0])
+    ws.append(["2026M04", 365.1, 297.9])
+    ws.append(["2026M05", None, None])
+    buf = io.BytesIO()
+    wb.save(buf)
+    assert parse_cpu_xlsx(buf.getvalue()) == {"2026-03": 369.5, "2026-04": 365.1}
