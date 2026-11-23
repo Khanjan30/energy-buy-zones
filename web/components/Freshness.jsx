@@ -18,7 +18,7 @@ export default function Freshness({ updated, asof, variant = "rail" }) {
     return (
       <span className={`fresh-badge ${stale ? "stale" : ""}`} title={`Updated ${stamp(updated)}`}>
         <span className="fresh-dot" aria-hidden />
-        Updated {stamp(updated, false)}{now ? <span className="faint">, {ago(updated, now)}</span> : null}
+        <span>Updated {stamp(updated, false)}{now ? <span className="faint">, {ago(updated, now)}</span> : null}</span>
       </span>
     );
   }
@@ -26,7 +26,7 @@ export default function Freshness({ updated, asof, variant = "rail" }) {
     <>
       <span className={`fresh ${stale ? "stale" : ""}`} aria-hidden />
       Updated {stamp(updated)}.
-      <br />Prices from the {asof} close. {stale ? "This is older than usual; the nightly run may have failed." : "Refreshes every weekday evening after the market closes."}
+      <br />Prices as of {asof}. {stale ? "This is older than usual; the nightly run may have failed." : "Refreshes every weekday evening after the market closes."}
     </>
   );
 }

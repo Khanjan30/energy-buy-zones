@@ -17,7 +17,7 @@ from .. import config
 
 FEED = "https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en"
 TOPICS = [
-    ("Energy markets", 'energy stocks OR "energy sector" when:3d'),
+    ("Energy markets", '"energy stocks" (NYSE OR Nasdaq OR "S&P 500") when:3d'),
     ("Oil and gas", '"oil prices" OR "natural gas prices" OR OPEC OR LNG when:2d'),
     ("Power and grid", 'utilities OR "power grid" OR "electricity demand" OR "data center power" when:3d'),
     ("Nuclear", '"nuclear power" OR uranium OR "small modular reactor" when:5d'),

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import ActionTag from "@/components/ActionTag";
 import Heatmap from "@/components/Heatmap";
-import Freshness from "@/components/Freshness";
 import NewsFeed from "@/components/NewsFeed";
 import MiniRange from "@/components/MiniRange";
 import Pending from "@/components/Pending";
@@ -51,9 +50,8 @@ export default function Overview() {
       <div className="page-head">
         <div>
           <h1>Energy market overview</h1>
-          <p>Where energy stocks stand today for a long-term buyer: what moved, what changed, and which names look worth buying at today&apos;s price. Prices from the {date(data.asof)} close.</p>
+          <p>Where energy stocks stand today for a long-term buyer: what moved, what changed, and which names look worth buying at today&apos;s price. Prices as of {date(data.asof)}.</p>
         </div>
-        <Freshness updated={data.generated_at} variant="badge" />
       </div>
 
       <div className="pulse">
