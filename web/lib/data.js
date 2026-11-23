@@ -20,6 +20,10 @@ export function getBacktest() {
   return read("backtest.json");
 }
 
+export function getResearch() {
+  return read("research.json");
+}
+
 export function getNews() {
   return read("news.json");
 }

@@ -29,7 +29,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,6 +67,22 @@ jobs:
             python -m pipeline.run --backtest
           else
             python -m pipeline.run
+          fi
+
+      - name: Strategy lab
+        # A failure here should never stop the daily scores from being committed.
+        continue-on-error: true
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          # Heavier: rebuilds the signal panel and backtests every formula. Mondays, manual runs, and model changes.
+          EV="${{ github.event_name }}"
+          if [ ! -f web/data/research.json ] || [ "$EV" = "workflow_dispatch" ] \
+             || { [ "$EV" = "schedule" ] && [ "$(date -u +%u)" = "1" ]; } \
+             || { [ "$EV" = "push" ] && git diff --name-only HEAD~1 HEAD | grep -qE "^(pipeline|config)/"; }; then
+            python -m pipeline.research.run
+          else
+            echo "Skipped today."
           fi
 
       - name: Commit results

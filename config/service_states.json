@@ -1,0 +1,17 @@
+{
+  "_note": "States where each company's main power plants or wires sit, used to count FEMA major disaster declarations that could hit it. Utilities and power producers only; first estimates, edit freely.",
+  "NEE": ["FL"],
+  "SO": ["GA", "AL", "MS"],
+  "DUK": ["NC", "SC", "FL", "IN", "OH", "KY"],
+  "AEP": ["OH", "TX", "WV", "VA", "KY", "IN", "MI", "OK", "LA", "AR", "TN"],
+  "D": ["VA", "NC", "SC"],
+  "SRE": ["CA", "TX"],
+  "ETR": ["LA", "AR", "MS", "TX"],
+  "XEL": ["MN", "CO", "TX", "NM", "WI", "MI", "ND", "SD"],
+  "NGG": ["NY", "MA", "RI"],
+  "CEG": ["IL", "PA", "MD", "NY", "TX"],
+  "VST": ["TX", "IL", "OH", "PA"],
+  "NRG": ["TX", "IL", "PA"],
+  "TLN": ["PA", "MT"],
+  "BEP": ["CA", "NY", "TX", "PA"]
+}

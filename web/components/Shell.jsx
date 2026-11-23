@@ -11,7 +11,7 @@ import { money } from "@/lib/format";
 const NAV = [
   ["Research", [["/", "Overview", "overview"], ["/screener/", "Screener", "screener"], ["/compare/", "Compare", "compare"]]],
   ["Yours", [["/portfolio/", "Portfolio", "portfolio"], ["/watchlist/", "Watchlist", "watch"]]],
-  ["The model", [["/events/", "Event log", "events"], ["/backtest/", "Backtest", "backtest"], ["/method/", "How it works", "method"]]],
+  ["The model", [["/lab/", "Strategy lab", "lab"], ["/events/", "Event log", "events"], ["/backtest/", "Backtest", "backtest"], ["/method/", "How it works", "method"]]],
 ];
 
 function Palette({ stocks, onClose }) {

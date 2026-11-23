@@ -10,6 +10,7 @@ export const Icon = {
   watch: <svg {...p}><path d="m10 2.8 2.2 4.5 4.9.7-3.5 3.5.8 4.9-4.4-2.3-4.4 2.3.8-4.9L2.9 8l4.9-.7L10 2.8Z" /></svg>,
   events: <svg {...p}><path d="M10 2.5 18 16.5H2L10 2.5Z" /><path d="M10 8v4M10 14.2v.1" /></svg>,
   backtest: <svg {...p}><path d="M3 3v14h14" /><path d="M6 13l3-4 3 2 4-6" /></svg>,
+  lab: <svg {...p}><path d="M8 2.5v5L3.5 15.5A1.5 1.5 0 0 0 4.8 17.5h10.4a1.5 1.5 0 0 0 1.3-2L12 7.5v-5M6.5 2.5h7M5.5 12.5h9" /></svg>,
   method: <svg {...p}><circle cx="10" cy="10" r="7.5" /><path d="M8 7.8a2.2 2.2 0 1 1 3 2c-.6.3-1 .8-1 1.5v.4M10 14.3v.1" /></svg>,
   search: <svg {...p} width="16" height="16"><circle cx="8.5" cy="8.5" r="5.5" /><path d="m13 13 4 4" /></svg>,
   plus: <svg {...p} width="16" height="16"><path d="M10 4v12M4 10h12" /></svg>,

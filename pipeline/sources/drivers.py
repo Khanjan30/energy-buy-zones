@@ -75,6 +75,17 @@ def update_all(log=print):
                 config.save_json(_path("us10y"), {"name": "us10y", "label": LABELS["us10y"], "source": "FRED", "series": series}, compact=True)
         except (requests.RequestException, ValueError) as e:
             log(f"  FRED us10y: {e}")
+    if not config.FRED_KEY or not config.load_json(_path("us10y")):
+        # No FRED key: use the Treasury's own free daily file for the 10-year yield.
+        try:
+            from . import macro
+            rec = macro.load_treasury(log)
+            cutoff = (date.today() - timedelta(days=365 * 7)).isoformat()
+            series = [[d, v] for d, v in sorted((rec.get("daily") or {}).items()) if d >= cutoff]
+            if series:
+                config.save_json(_path("us10y"), {"name": "us10y", "label": LABELS["us10y"], "source": "US Treasury", "series": series}, compact=True)
+        except Exception as e:  # never block the run on this
+            log(f"  Treasury us10y: {e}")
     # Uranium: monthly values typed into config/uranium.json.
     manual = config.load_json(config.CONFIG / "uranium.json", {"series": []})
     if manual.get("series"):

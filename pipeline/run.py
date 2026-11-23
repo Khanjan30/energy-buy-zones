@@ -62,7 +62,7 @@ def main(argv=None):
         "prices": "Twelve Data" if config.TWELVE_DATA_KEY else "Stooq",
         "filings": "SEC company facts",
         "drivers": sorted(drivers.keys()),
-        "missing_keys": [n for n, k in [("EIA_API_KEY", config.EIA_KEY), ("FRED_API_KEY", config.FRED_KEY)] if not k],
+        "missing_keys": [n for n, k in [("EIA_API_KEY", config.EIA_KEY)] if not k],
         "stocks_with_prices": sum(1 for t in scored if t in prices and not prices[t].empty),
         "stocks_with_filings": sum(1 for t in scored if t in fins and not fins[t].empty),
     }
