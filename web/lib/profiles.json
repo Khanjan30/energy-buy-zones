@@ -1,0 +1,282 @@
+{
+ "XOM": {
+  "what": "The largest US oil company. It pumps oil and gas around the world, refines it into fuels, and makes chemicals and plastics.",
+  "money": "Selling oil, gas, fuel and chemicals. Profits rise and fall with oil prices, but its refineries and chemical plants soften the swings.",
+  "watch": "Oil prices and how much it pays back to shareholders through dividends and buybacks."
+ },
+ "CVX": {
+  "what": "The second largest US oil company. It drills for oil and gas, refines fuel, and sells it at Chevron and Texaco stations.",
+  "money": "Selling oil, gas and refined fuels. Its recent purchase of Hess added a large stake in fast-growing oil fields off Guyana.",
+  "watch": "Oil prices and how smoothly the Hess oil fields grow."
+ },
+ "COP": {
+  "what": "The biggest US company that only finds and pumps oil and gas, with no refineries or gas stations.",
+  "money": "Selling raw oil and gas. With no refining business, its profits follow oil prices closely.",
+  "watch": "Oil prices and its costs per barrel."
+ },
+ "EOG": {
+  "what": "A US oil and gas driller known for low costs, working mainly in Texas, New Mexico and Ohio.",
+  "money": "Selling oil and gas from its own wells.",
+  "watch": "Oil prices and whether it keeps costs low as older wells decline."
+ },
+ "OXY": {
+  "what": "An oil and gas producer focused on the Permian Basin in Texas, with a chemicals business and a project to pull carbon dioxide out of the air.",
+  "money": "Mostly selling oil and gas; its chemicals unit adds steadier income.",
+  "watch": "Debt left over from past purchases and oil prices. Berkshire Hathaway is a major owner."
+ },
+ "DVN": {
+  "what": "A US oil and gas producer working in Texas, Oklahoma, North Dakota and Wyoming.",
+  "money": "Selling oil and gas. It pays a dividend that moves up and down with profits.",
+  "watch": "Oil prices and the size of its variable dividend."
+ },
+ "FANG": {
+  "what": "A Texas oil driller that works only in the Permian Basin, the most productive US oil region.",
+  "money": "Selling oil and gas from its wells.",
+  "watch": "Oil prices and how well it combines the Endeavor business it bought."
+ },
+ "EQT": {
+  "what": "The largest natural gas producer in the US, drilling in Pennsylvania and West Virginia. It also owns pipelines.",
+  "money": "Selling natural gas, so its profits follow US gas prices.",
+  "watch": "Natural gas prices, which depend on weather, exports and demand from data centers."
+ },
+ "EXE": {
+  "what": "A large US natural gas producer formed when Chesapeake Energy merged with Southwestern Energy.",
+  "money": "Selling natural gas from Louisiana, Pennsylvania and West Virginia.",
+  "watch": "Natural gas prices and new demand from gas export terminals."
+ },
+ "LNG": {
+  "what": "The largest US exporter of liquefied natural gas. It cools gas into a liquid and ships it overseas.",
+  "money": "Mostly long contracts, often 15 to 20 years, where buyers pay fixed fees whether or not they take the gas.",
+  "watch": "World gas prices and the timing of new export capacity."
+ },
+ "VG": {
+  "what": "A newer US exporter of liquefied natural gas with large plants in Louisiana.",
+  "money": "Long contracts with overseas buyers plus selling some cargoes at market prices.",
+  "watch": "Debt from building plants and disputes with past customers over delayed cargoes."
+ },
+ "KMI": {
+  "what": "One of the largest pipeline operators in North America, moving natural gas, fuels and carbon dioxide.",
+  "money": "Fees for moving and storing energy, which are steadier than oil and gas prices.",
+  "watch": "Growth in gas demand from power plants and exports, and its debt."
+ },
+ "WMB": {
+  "what": "A pipeline company whose Transco line carries much of the natural gas used on the US East Coast.",
+  "money": "Fees for moving and processing natural gas.",
+  "watch": "New pipeline projects and power plant demand for gas."
+ },
+ "ET": {
+  "what": "A huge pipeline partnership moving oil, gas and fuels across the US.",
+  "money": "Fees for transporting, storing and processing energy. Owners receive large cash payouts.",
+  "watch": "Debt levels and tax paperwork: it sends a K-1 form, not a standard 1099."
+ },
+ "EPD": {
+  "what": "A pipeline partnership focused on gas liquids, oil and petrochemicals along the Gulf Coast.",
+  "money": "Fees for moving and processing energy, known for steady payouts that have risen for over 25 years.",
+  "watch": "Export volumes and the K-1 tax form it sends owners."
+ },
+ "OKE": {
+  "what": "A pipeline company moving natural gas and gas liquids, mostly in the middle of the US.",
+  "money": "Fees for gathering, processing and moving gas and liquids.",
+  "watch": "How well it combines its recent purchases and drilling activity on its pipelines."
+ },
+ "NEE": {
+  "what": "The owner of Florida Power and Light and the world's largest builder of wind and solar farms.",
+  "money": "Regulated electricity bills in Florida plus selling clean power under long contracts.",
+  "watch": "Interest rates, clean energy tax credits and demand from data centers."
+ },
+ "SO": {
+  "what": "A power company serving Georgia, Alabama and Mississippi, and owner of the newest US nuclear reactors at Plant Vogtle.",
+  "money": "Regulated electricity and gas bills, with rates approved by state regulators.",
+  "watch": "Rate decisions in Georgia and data center growth in its area."
+ },
+ "DUK": {
+  "what": "One of the largest US power companies, serving the Carolinas, Florida, Indiana, Ohio and Kentucky.",
+  "money": "Regulated electricity and gas bills.",
+  "watch": "Its large building plan, which needs new debt, and state rate approvals."
+ },
+ "AEP": {
+  "what": "A power company that owns the largest high-voltage transmission network in the US, serving 11 states.",
+  "money": "Regulated electricity bills and fees for moving power over its lines.",
+  "watch": "Data center demand in Ohio and Texas and the cost of building lines."
+ },
+ "D": {
+  "what": "A power company serving Virginia and the Carolinas, home to the largest cluster of data centers in the world.",
+  "money": "Regulated electricity and gas bills.",
+  "watch": "Its large offshore wind farm and data center demand in northern Virginia."
+ },
+ "SRE": {
+  "what": "An energy company owning San Diego Gas and Electric and Southern California Gas, plus a large stake in Oncor, the biggest power line company in Texas.",
+  "money": "Regulated bills in California and Texas plus a gas export business.",
+  "watch": "Wildfire risk in California and growth in Texas."
+ },
+ "ETR": {
+  "what": "A power company serving Louisiana, Arkansas, Mississippi and Texas, with a large fleet of nuclear plants.",
+  "money": "Regulated electricity bills, with growing sales to factories and data centers.",
+  "watch": "Hurricane damage and new industrial customers along the Gulf Coast."
+ },
+ "XEL": {
+  "what": "A power company serving eight states in the Midwest and West, and a leader in wind power.",
+  "money": "Regulated electricity and gas bills.",
+  "watch": "Wildfire lawsuits in Colorado and Texas and its clean energy building plan."
+ },
+ "NGG": {
+  "what": "A British company that runs power lines in England and Wales and power and gas networks in New York and Massachusetts.",
+  "money": "Regulated fees for carrying electricity and gas, set by regulators in the UK and US.",
+  "watch": "Its large upgrade plan for the UK grid and the currency exchange rate."
+ },
+ "CEG": {
+  "what": "The largest owner of nuclear power plants in the US, and the biggest producer of clean electricity.",
+  "money": "Selling electricity at market prices and under long contracts, including deals with tech companies such as Microsoft and Meta.",
+  "watch": "Power prices, data center deals and how it combines Calpine, which it bought."
+ },
+ "VST": {
+  "what": "A Texas-based power producer with nuclear, gas and coal plants, and a large retail electricity business.",
+  "money": "Selling electricity to the grid and directly to homes and businesses.",
+  "watch": "Power prices in Texas and new deals with data centers."
+ },
+ "NRG": {
+  "what": "A power producer and retail electricity seller in Texas and the Northeast, which also owns Vivint home security.",
+  "money": "Selling electricity and home services to millions of customers.",
+  "watch": "Power prices and new gas plants it is building for data center demand."
+ },
+ "TLN": {
+  "what": "A power producer that owns the Susquehanna nuclear plant in Pennsylvania, which supplies an Amazon data center.",
+  "money": "Selling electricity at market prices and under a long contract with Amazon.",
+  "watch": "Power prices in the Mid-Atlantic and more data center deals."
+ },
+ "BEP": {
+  "what": "One of the world's largest owners of hydro, wind and solar power plants, run by Brookfield.",
+  "money": "Selling clean power under long contracts, often linked to inflation.",
+  "watch": "Interest rates and new corporate deals, such as its Microsoft agreement."
+ },
+ "CCJ": {
+  "what": "A Canadian company and one of the world's largest uranium miners. It also owns 49% of Westinghouse, which designs nuclear reactors.",
+  "money": "Selling uranium to power plants, mostly under long contracts, plus fuel services and reactor work.",
+  "watch": "Uranium prices and new reactor orders for Westinghouse."
+ },
+ "LEU": {
+  "what": "A US company that enriches uranium, the step that turns mined uranium into fuel reactors can use.",
+  "money": "Selling enrichment services to utilities and running a government project for advanced reactor fuel.",
+  "watch": "Limits on Russian uranium imports and US funding for new enrichment plants."
+ },
+ "BWXT": {
+  "what": "The builder of nuclear reactors for US Navy submarines and aircraft carriers, also making medical isotopes and parts for power plants.",
+  "money": "Mostly long government contracts, which are very steady.",
+  "watch": "Navy shipbuilding budgets and new work on small reactors."
+ },
+ "UEC": {
+  "what": "A US uranium miner with projects in Texas, Wyoming and Canada.",
+  "money": "Selling uranium, though production is still small and profits are uneven.",
+  "watch": "Uranium prices and how quickly its mines ramp up."
+ },
+ "NXE": {
+  "what": "A Canadian company developing one of the world's largest untapped uranium deposits, in Saskatchewan.",
+  "money": "Nothing yet. It is building its first mine and has no sales.",
+  "watch": "Government approvals and the cost of building the mine."
+ },
+ "GEV": {
+  "what": "The former energy arm of General Electric, making gas turbines, wind turbines and power grid equipment.",
+  "money": "Selling and servicing power equipment. Gas turbines are sold out years ahead because of data center demand.",
+  "watch": "Its order backlog and whether its wind business stops losing money."
+ },
+ "VRT": {
+  "what": "A maker of the power and cooling equipment that keeps data centers running.",
+  "money": "Selling and servicing equipment to data centers, with strong demand from artificial intelligence buildouts.",
+  "watch": "Spending on data centers by the big tech companies."
+ },
+ "ETN": {
+  "what": "A large industrial company making electrical equipment such as switchgear, breakers and power systems.",
+  "money": "Selling electrical gear to data centers, utilities, factories and buildings.",
+  "watch": "Data center and factory building and its growing order backlog."
+ },
+ "PWR": {
+  "what": "The largest US contractor that builds and repairs power lines, substations and pipelines.",
+  "money": "Getting paid by utilities and companies to build energy projects.",
+  "watch": "Utility building budgets and the shortage of skilled workers."
+ },
+ "HUBB": {
+  "what": "A maker of electrical parts for power grids and buildings, such as connectors, pole hardware and wiring devices.",
+  "money": "Selling parts to utilities and contractors.",
+  "watch": "Utility spending on grid upgrades."
+ },
+ "POWL": {
+  "what": "A Houston company that builds custom electrical equipment for oil and gas plants, utilities and data centers.",
+  "money": "Selling large, engineered electrical systems on project orders.",
+  "watch": "New orders and how much of its business comes from data centers."
+ },
+ "ITRI": {
+  "what": "A maker of smart meters and software that help utilities measure and manage electricity, gas and water use.",
+  "money": "Selling meters and charging utilities for software and network services.",
+  "watch": "Utility spending on grid upgrades and growth in its software business."
+ },
+ "FSLR": {
+  "what": "The largest US maker of solar panels, using its own thin-film technology that does not depend on Chinese supply chains.",
+  "money": "Selling panels to developers of large solar farms, helped by US manufacturing tax credits.",
+  "watch": "Changes to clean energy tax credits and tariffs on imported panels."
+ },
+ "ENPH": {
+  "what": "A maker of the small electronic devices that convert power from home solar panels, plus home batteries.",
+  "money": "Selling equipment through installers to homeowners.",
+  "watch": "Home solar demand, interest rates and the end of tax credits for homeowners."
+ },
+ "NXT": {
+  "what": "The leading maker of solar trackers, the motorized frames that turn panels to follow the sun.",
+  "money": "Selling trackers and software to builders of large solar farms.",
+  "watch": "Large solar farm demand and US tax credit rules."
+ },
+ "SEDG": {
+  "what": "A maker of electronics that manage and convert power from rooftop solar panels.",
+  "money": "Selling equipment to installers, mostly in the US and Europe.",
+  "watch": "Whether it returns to profit after a sharp sales drop."
+ },
+ "ARRY": {
+  "what": "A maker of solar trackers for large solar farms.",
+  "money": "Selling trackers to solar farm builders.",
+  "watch": "Competition with Nextracker and solar project timing."
+ },
+ "RUN": {
+  "what": "The largest US home solar company, which installs panels and batteries and often leases them to homeowners.",
+  "money": "Monthly payments from homeowners over 20 to 25 years, plus selling tax credits.",
+  "watch": "Interest rates, its heavy debt and changes to home solar tax credits."
+ },
+ "FLNC": {
+  "what": "A maker of large battery systems that store power for utilities and the grid, backed by Siemens and AES.",
+  "money": "Selling and servicing battery storage projects.",
+  "watch": "Battery costs, tariffs on Chinese parts and project delays."
+ },
+ "OKLO": {
+  "what": "A startup designing small nuclear reactors that can power data centers and towns.",
+  "money": "Nothing yet. It has no sales and is waiting for permission from nuclear regulators to build.",
+  "watch": "Approval from the Nuclear Regulatory Commission and signed customer deals."
+ },
+ "SMR": {
+  "what": "The first company with a small modular nuclear reactor design approved by US regulators.",
+  "money": "Very little so far, mostly engineering work. It needs a customer to order and build a plant.",
+  "watch": "A first firm order. Its main owner, Fluor, has been selling shares."
+ },
+ "XE": {
+  "what": "A developer of small, high-temperature nuclear reactors and the special fuel they use, backed by Amazon and Dow.",
+  "money": "Mostly government funding and engineering work for now.",
+  "watch": "Progress on its first plant in Texas and fuel factory in Tennessee."
+ },
+ "STDN": {
+  "what": "A company making the tiny coated-particle nuclear fuel (called TRISO) that many advanced reactor designs use.",
+  "money": "Early fuel contracts with reactor developers and the government.",
+  "watch": "Whether advanced reactors get built, since they are its future customers."
+ },
+ "FRVO": {
+  "what": "A company drilling deep geothermal wells to make steady, clean power from underground heat, using oil and gas drilling methods.",
+  "money": "Selling power under long contracts to utilities and tech companies such as Google.",
+  "watch": "Its first large plant in Utah coming online on time and on budget."
+ },
+ "NNE": {
+  "what": "A startup designing very small portable nuclear reactors.",
+  "money": "Nothing yet. It has no sales and is years from a working reactor.",
+  "watch": "Regulatory progress and how much cash it raises by selling new shares."
+ },
+ "EOSE": {
+  "what": "A maker of zinc-based batteries that store power for the grid without using lithium.",
+  "money": "Selling battery systems, but it still loses money on each unit as it scales up.",
+  "watch": "Whether its factory reaches lower costs and the steady cash it needs from loans."
+ }
+}

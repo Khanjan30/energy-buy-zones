@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { date, pct } from "@/lib/format";
+import { byVerdict } from "@/lib/lab";
 
 const SLOTS = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c7)"];
 const FAMILY_LABEL = {
@@ -102,7 +103,7 @@ function GrowthChart({ series, bench, testStart }) {
 }
 
 export default function Lab({ data }) {
-  const ranked = useMemo(() => [...data.strategies].sort((a, b) => (b.test?.skill ?? -9) - (a.test?.skill ?? -9)), [data]);
+  const ranked = useMemo(() => [...data.strategies].sort(byVerdict), [data]);
   const [picked, setPicked] = useState(() => {
     const top = ranked.slice(0, 2).map((s) => s.id);
     return [...new Set([...top, "v1"])].slice(0, 3);
@@ -120,7 +121,7 @@ export default function Lab({ data }) {
       <div className="panel flush">
         <div className="panel-head" style={{ padding: "16px 18px 0" }}>
           <h2>Leaderboard</h2>
-          <span className="small faint">Sorted by skill in the test years. Tick formulas to compare them on the chart.</span>
+          <span className="small faint">Sorted by verdict, then by skill in the test years. Tick formulas to compare them on the chart.</span>
         </div>
         <div className="table-wrap">
           <table>

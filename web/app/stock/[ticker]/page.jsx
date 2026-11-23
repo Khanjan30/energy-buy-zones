@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ActionTag from "@/components/ActionTag";
+import BusinessSummary from "@/components/BusinessSummary";
 import PriceChart from "@/components/PriceChart";
 import PriceLadder from "@/components/PriceLadder";
 import TechPanel from "@/components/TechPanel";
@@ -112,6 +113,8 @@ export default async function StockPage({ params }) {
           </div>
           <PriceLadder price={t.price} zone={s.buy_zone} fair={s.fair_value} addMore={s.add_more} techZone={cz} />
         </div>
+
+        <BusinessSummary s={s} />
 
         {(s.hard_fails?.length > 0) && (
           <div className="banner">

@@ -403,3 +403,16 @@ details.pillar[open] .more { display: none; }
 .picks li { display: flex; justify-content: space-between; padding-right: 4px; }
 .macro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 18px; }
 .macro-card { border-top: 1px solid var(--line-soft); padding-top: 10px; }
+
+/* Business in plain words */
+.biz-top { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--line-soft); }
+.biz-top p { margin: 4px 0 0; line-height: 1.5; max-width: 52ch; }
+.biz-rows { display: flex; flex-direction: column; }
+.biz-row { display: grid; grid-template-columns: 130px minmax(0, 1fr) 120px; gap: 16px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.biz-text { margin: 0; line-height: 1.5; max-width: 76ch; }
+.biz-bottom { padding-top: 14px; }
+.biz-bottom p { margin: 4px 0 0; line-height: 1.55; max-width: 80ch; font-weight: 500; }
+@media (max-width: 860px) {
+  .biz-top { grid-template-columns: 1fr; }
+  .biz-row { grid-template-columns: 1fr; gap: 6px; }
+}

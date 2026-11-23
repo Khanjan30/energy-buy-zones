@@ -8,7 +8,7 @@ export function big(x, currency = "USD") {
   if (x === null || x === undefined) return "—";
   const sign = x < 0 ? "-" : "";
   const a = Math.abs(x);
-  const unit = a >= 1e12 ? [1e12, "T"] : a >= 1e9 ? [1e9, "B"] : a >= 1e6 ? [1e6, "M"] : [1, ""];
+  const unit = a >= 1e12 ? [1e12, "T"] : a >= 1e9 ? [1e9, "B"] : a >= 1e6 ? [1e6, "M"] : a >= 1e4 ? [1e3, "K"] : [1, ""];
   const prefix = currency === "USD" ? "$" : currency + " ";
   return `${sign}${prefix}${(a / unit[0]).toFixed(unit[1] ? 1 : 0)}${unit[1]}`;
 }

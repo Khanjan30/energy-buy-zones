@@ -1,4 +1,5 @@
 import Lab, { SkillBar } from "@/components/Lab";
+import { byVerdict } from "@/lib/lab";
 import Pending from "@/components/Pending";
 import Sparkline from "@/components/Sparkline";
 import { getResearch } from "@/lib/data";
@@ -24,7 +25,7 @@ function signalVerdict(f) {
 export default function LabPage() {
   const data = getResearch();
   if (!data) return (<><div className="page-head"><h1>Strategy lab</h1></div><Pending what="strategy lab results" /></>);
-  const best = [...data.strategies].sort((a, b) => (b.test?.skill ?? -9) - (a.test?.skill ?? -9))[0];
+  const best = [...data.strategies].sort(byVerdict)[0];
   const v1 = data.strategies.find((s) => s.id === "v1");
   const ok = (data.data_status || []).filter((s) => s.ok).length;
   const weights = Object.entries(data.learned_weights || {}).slice(0, 10);
@@ -45,7 +46,7 @@ export default function LabPage() {
       <div className="pulse">
         <div><div className="pulse-k">Formulas tested</div><div className="pulse-v">{data.strategies.length}</div><div className="pulse-s">From {data.factors.length} signals in 6 families</div></div>
         <div><div className="pulse-k">History</div><div className="pulse-v" style={{ fontSize: 20, marginTop: 6 }}>{date(data.train_period?.[0])} to {date(data.test_period?.[1])}</div><div className="pulse-s">{data.dates} quarters, {data.observations.toLocaleString()} stock checks</div></div>
-        <div><div className="pulse-k">Best on unseen years</div><div className="pulse-v" style={{ fontSize: 19, marginTop: 6 }}>{best?.name}</div><div className="pulse-s">Skill {best?.test?.skill?.toFixed(3)}, against {v1?.test?.skill?.toFixed(3)} for today&apos;s formula</div></div>
+        <div><div className="pulse-k">Best formula</div><div className="pulse-v" style={{ fontSize: 19, marginTop: 6 }}>{best?.name}</div><div className="pulse-s">Test-year skill {best?.test?.skill?.toFixed(3)}, against {v1?.test?.skill?.toFixed(3)} for today&apos;s formula</div></div>
         <div><div className="pulse-k">Data sources loaded</div><div className="pulse-v">{ok} of {(data.data_status || []).length}</div><div className="pulse-s">Run {stamp(data.generated_at)}</div></div>
       </div>
 
