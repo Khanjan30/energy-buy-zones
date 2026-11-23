@@ -176,3 +176,23 @@ def test_news_parsing_and_tagging():
     assert items[0]["tickers"] == ["XOM"] and items[1]["tickers"] == ["VST"]
     assert news.clean_name("Exxon Mobil Corporation") == "Exxon Mobil"
     assert news.parse("not xml") == []
+
+
+def test_stock_split_adjusts_old_share_counts():
+    facts = []
+    for y, q, sh in [(2024, 3, 100), (2024, 6, 101), (2024, 9, 100), (2024, 12, 202), (2025, 3, 203)]:
+        end = f"{y}-{q:02d}-{28 if q == 2 else 30 if q in (6, 9) else 31}"
+        start = f"{y}-{q - 2:02d}-01"
+        facts.append([start, end, sh, f"{y + (1 if q == 12 else 0)}-{(q % 12) + 1:02d}-15", "10-Q"])
+    fin = Financials({"currency": "USD", "items": {"shares": {"facts": facts},
+                      "net_income": {"facts": [["2024-01-01", "2024-09-30", 300, "2024-10-15", "10-Q"],
+                                               ["2023-10-01", "2024-09-30", 400, "2024-10-15", "10-K"]]}}})
+    assert fin.splits == [("2024-09-30", 2.0)]
+    snap = fin.snapshot(date(2024, 11, 1))
+    assert snap["shares"] == 200 and snap["eps"] == 2.0
+
+
+def test_normal_share_changes_are_not_splits():
+    from pipeline.financials import find_splits
+    pts = {"2024-03-31": (100, "x"), "2024-06-30": (130, "x"), "2024-09-30": (96, "x")}
+    assert find_splits(pts) == []

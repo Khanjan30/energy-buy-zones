@@ -69,6 +69,33 @@ def build_item(facts, duration=True):
     return it
 
 
+SPLIT_RATIOS = [2, 3, 4, 5, 8, 10, 15, 20]
+
+
+def find_splits(points):
+    """Stock splits seen as a jump in share count to almost exactly a whole multiple.
+
+    points: {period_end: (shares, filed)}. Returns [(last_end_before_split, factor)], where
+    factor above 1 is a forward split (2 means 2-for-1) and below 1 a reverse split.
+    Filings report share counts as they stood then, while prices are adjusted for later
+    splits, so older share counts must be scaled up to match.
+    """
+    rows = sorted((e, v) for e, (v, _f) in points.items() if v and v > 0)
+    out = []
+    for (e0, v0), (e1, v1) in zip(rows, rows[1:]):
+        if (d(e1) - d(e0)).days > 200:
+            continue
+        r = v1 / v0
+        for n in SPLIT_RATIOS:
+            if abs(r / n - 1) < 0.06:
+                out.append((e0, float(n)))
+                break
+            if abs(r * n - 1) < 0.06:
+                out.append((e0, 1.0 / n))
+                break
+    return out
+
+
 class Financials:
     def __init__(self, rec):
         self.rec = rec or {}
@@ -77,6 +104,21 @@ class Financials:
         for name, node in (self.rec.get("items") or {}).items():
             dur = name in DURATION_ITEMS
             self.items[name] = build_item(node.get("facts", []), duration=dur)
+        self.splits = []
+        sh = self.items.get("shares")
+        if sh:
+            self.splits = find_splits(sh.points)
+            if self.splits:
+                def factor(end):
+                    f = 1.0
+                    for last_before, n in self.splits:
+                        if end <= last_before:
+                            f *= n
+                    return f
+                for part in (sh.points, sh.quarters, sh.annual):
+                    for e in list(part):
+                        v, filed = part[e]
+                        part[e] = (v * factor(e), filed)
 
     @property
     def usd(self):

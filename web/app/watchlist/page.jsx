@@ -14,7 +14,7 @@ export default function WatchlistPage() {
           <p>Stocks you are waiting on. Each row shows how far today&apos;s price is from a good price to buy.</p>
         </div>
       </div>
-      {data ? <Watchlist stocks={data.stocks.map(slim)} /> : <Pending />}
+      {data ? <Watchlist stocks={[...data.stocks.map(slim), ...(data.tracked || []).map((t) => ({ ...slim(t), tracked: true }))]} /> : <Pending />}
     </>
   );
 }

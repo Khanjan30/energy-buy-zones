@@ -40,6 +40,9 @@ def stock_record(st, label, res, prices, fin):
         notes.append(f"Reports in {m['currency']}, so valuation inputs that compare price with earnings are skipped in version 1.")
     if res["coverage"] < 1:
         notes.append(f"Scored on {round(res['coverage'] * 100)}% of the pillar weight; missing inputs are left out rather than guessed.")
+    for last_before, n in (getattr(fin, "splits", None) or []):
+        kind = f"{int(n)}-for-1 stock split" if n >= 1 else f"1-for-{round(1 / n)} reverse split"
+        notes.append(f"Share counts before {last_before[:7]} are adjusted for a {kind}, so past earnings per share line up with today's prices.")
     return {
         "ticker": st["ticker"], "name": st["name"], "subsector": st["subsector"], "subsector_label": label,
         "status": "scored",

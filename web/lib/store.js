@@ -45,7 +45,8 @@ function useStored(key, fallback) {
 export function useWatchlist() {
   const [list, setList, ready] = useStored(KEYS.watch, []);
   const toggle = (t) => setList((l) => (l.includes(t) ? l.filter((x) => x !== t) : [...l, t]));
-  return { list, has: (t) => list.includes(t), toggle, ready };
+  const addMany = (ts) => setList((l) => [...l, ...ts.filter((t) => !l.includes(t))]);
+  return { list, has: (t) => list.includes(t), toggle, addMany, ready };
 }
 
 // Holdings: [{ ticker, shares, cost }] where cost is the average price paid per share.
