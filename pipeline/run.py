@@ -10,6 +10,7 @@ from datetime import date
 
 from . import backtest, config, engine, output
 from .sources import drivers as drivers_src
+from .sources import news as news_src
 from .sources import prices as prices_src
 from .sources import sec as sec_src
 
@@ -39,6 +40,11 @@ def main(argv=None):
         fin_recs = sec_src.update_all(scored, log)
         log("Energy drivers")
         driver_recs = drivers_src.update_all(log)
+        log("News headlines")
+        try:
+            news_src.update(uni, log)
+        except Exception as e:  # news is nice to have; never block scoring
+            log(f"  news skipped: {e}")
 
     fins, prices, drivers = engine.load_inputs(uni, fin_recs, price_recs, {k: v for k, v in driver_recs.items() if v})
     if not any(not p.empty for p in prices.values()):

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import ActionTag from "@/components/ActionTag";
 import Heatmap from "@/components/Heatmap";
+import Freshness from "@/components/Freshness";
+import NewsFeed from "@/components/NewsFeed";
 import MiniRange from "@/components/MiniRange";
 import Pending from "@/components/Pending";
 import Sparkline from "@/components/Sparkline";
-import { getScores, getSignals, slim } from "@/lib/data";
+import { getNews, getScores, getSignals, slim } from "@/lib/data";
 import { ACTION_GROUP, date, money, num, pct } from "@/lib/format";
 import { goodRange } from "@/lib/plain";
 
@@ -42,14 +44,16 @@ export default function Overview() {
   const ideas = stocks.filter((s) => ACTION_GROUP[s.action] === "buy" && goodRange(s)).sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).slice(0, 4);
   const sig = signalChanges(getSignals(), stocks);
   const events = (data.events || []).slice(0, 4);
+  const news = getNews();
 
   return (
     <>
       <div className="page-head">
         <div>
           <h1>Energy market overview</h1>
-          <p>Where energy stocks stand today for a long-term buyer: what moved, what changed, and which names look worth buying at today&apos;s price. Prices as of {date(data.asof)}.</p>
+          <p>Where energy stocks stand today for a long-term buyer: what moved, what changed, and which names look worth buying at today&apos;s price. Prices from the {date(data.asof)} close.</p>
         </div>
+        <Freshness updated={data.generated_at} variant="badge" />
       </div>
 
       <div className="pulse">
@@ -79,41 +83,47 @@ export default function Overview() {
         <Heatmap stocks={stocks} groups={data.subsectors} />
       </div>
 
-      <div className="cols-2 section">
+      <div className="cols-2 section" style={{ alignItems: "start" }}>
         <div className="panel">
-          <div className="panel-head">
-            <h2>What changed</h2>
-            <span className="small faint">{sig.since ? `Suggestions that changed since ${date(sig.since)}` : "Updated after every weekday run"}</span>
-          </div>
-          {!sig.since && <p className="muted small">This feed starts with the next weekday run. It will list every stock whose suggestion changes, such as a move from Hold to Buy, so you can see what is new at a glance.</p>}
-          {sig.since && sig.items.length === 0 && <p className="muted small">No suggestions changed in the last run. Every stock kept its call.</p>}
-          {sig.items.map((it) => (
-            <div className="feed-item" key={it.ticker}>
-              <Link href={`/stock/${it.ticker}/`} className="ticker">{it.ticker}</Link>
-              <div>
-                <div className="small muted">{it.name}</div>
-                <div className="row" style={{ gap: 8, marginTop: 4 }}><ActionTag action={it.from} /><span className="arrow" aria-label="changed to">to</span><ActionTag action={it.to} /></div>
-              </div>
-              <span className="small faint num">{it.delta != null && Math.abs(it.delta) >= 0.5 ? `Quality ${it.delta > 0 ? "+" : ""}${it.delta.toFixed(1)}` : ""}</span>
-            </div>
-          ))}
+          <div className="panel-head"><h2>Energy news</h2><span className="small faint">Latest headlines by topic</span></div>
+          <NewsFeed topics={news?.topics} tickers={stocks.map((x) => x.ticker)} fetched={news?.fetched} />
         </div>
-
-        <div className="panel">
-          <div className="panel-head"><h2>Biggest moves today</h2><Link className="small" href="/screener/">Open the screener</Link></div>
-          <div className="cols-even" style={{ gap: 20 }}>
-            {[["Up", gainers], ["Down", losers]].map(([label, list]) => (
-              <div key={label}>
-                <div className="small muted" style={{ marginBottom: 4 }}>{label}</div>
-                {list.map((s) => (
-                  <Link key={s.ticker} href={`/stock/${s.ticker}/`} className="mover" style={{ color: "inherit", textDecoration: "none", gridTemplateColumns: "50px minmax(0, 1fr) 56px" }}>
-                    <span className="ticker">{s.ticker}</span>
-                    <Sparkline values={s.spark} width={56} height={22} />
-                    <span className={`r num ${s.tech.change_pct >= 0 ? "up" : "down"}`}>{pct(s.tech.change_pct / 100, 1, true)}</span>
-                  </Link>
-                ))}
+        <div className="stack">
+          <div className="panel">
+            <div className="panel-head">
+              <h2>What changed</h2>
+              <span className="small faint">{sig.since ? `Suggestions that changed since ${date(sig.since)}` : "Updated after every weekday run"}</span>
+            </div>
+            {!sig.since && <p className="muted small">This feed starts with the next weekday run. It will list every stock whose suggestion changes, such as a move from Hold to Buy, so you can see what is new at a glance.</p>}
+            {sig.since && sig.items.length === 0 && <p className="muted small">No suggestions changed in the last run. Every stock kept its call.</p>}
+            {sig.items.map((it) => (
+              <div className="feed-item" key={it.ticker}>
+                <Link href={`/stock/${it.ticker}/`} className="ticker">{it.ticker}</Link>
+                <div>
+                  <div className="small muted">{it.name}</div>
+                  <div className="row" style={{ gap: 8, marginTop: 4 }}><ActionTag action={it.from} /><span className="arrow" aria-label="changed to">to</span><ActionTag action={it.to} /></div>
+                </div>
+                <span className="small faint num">{it.delta != null && Math.abs(it.delta) >= 0.5 ? `Quality ${it.delta > 0 ? "+" : ""}${it.delta.toFixed(1)}` : ""}</span>
               </div>
             ))}
+          </div>
+
+          <div className="panel">
+            <div className="panel-head"><h2>Biggest moves today</h2><Link className="small" href="/screener/">Open the screener</Link></div>
+            <div className="cols-even" style={{ gap: 20 }}>
+              {[["Up", gainers], ["Down", losers]].map(([label, list]) => (
+                <div key={label}>
+                  <div className="small muted" style={{ marginBottom: 4 }}>{label}</div>
+                  {list.map((s) => (
+                    <Link key={s.ticker} href={`/stock/${s.ticker}/`} className="mover" style={{ color: "inherit", textDecoration: "none", gridTemplateColumns: "50px minmax(0, 1fr) 56px" }}>
+                      <span className="ticker">{s.ticker}</span>
+                      <Sparkline values={s.spark} width={56} height={22} />
+                      <span className={`r num ${s.tech.change_pct >= 0 ? "up" : "down"}`}>{pct(s.tech.change_pct / 100, 1, true)}</span>
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

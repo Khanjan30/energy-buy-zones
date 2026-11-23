@@ -9,7 +9,8 @@ import ScoreHistory from "@/components/ScoreHistory";
 import StockActions from "@/components/StockActions";
 import MiniRange from "@/components/MiniRange";
 import ActionTagPeer from "@/components/ActionTag";
-import { getBacktest, getScores } from "@/lib/data";
+import { StockNews } from "@/components/NewsFeed";
+import { getBacktest, getNews, getScores } from "@/lib/data";
 import { big, date, money, num, pct } from "@/lib/format";
 import { ACTION_PLAIN, chartZone, goodRange, priceCheck, summary } from "@/lib/plain";
 
@@ -70,6 +71,7 @@ export default async function StockPage({ params }) {
   const peers = data.stocks.filter((x) => x.subsector === s.subsector && x.ticker !== s.ticker && x.tech)
     .sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
   const history = getBacktest()?.history?.[s.ticker] || [];
+  const news = getNews();
   const noFairWhy = s.subsector === "early"
     ? "Not used for early-stage companies: they have no steady profits to value."
     : s.notes?.find((n) => n.startsWith("Reports in"))
@@ -225,7 +227,12 @@ export default async function StockPage({ params }) {
         )}
 
         <div className="panel">
-          <div className="panel-head"><h2>News and events that affect {s.ticker}</h2><Link href="/events/" className="small">All events</Link></div>
+          <div className="panel-head"><h2>Latest news about {s.ticker}</h2><span className="faint small">Headlines from the last two weeks</span></div>
+          <StockNews items={news?.by_ticker?.[s.ticker]} ticker={s.ticker} tickers={data.stocks.map((x) => x.ticker)} fetched={news?.fetched} />
+        </div>
+
+        <div className="panel">
+          <div className="panel-head"><h2>Events in the model that affect {s.ticker}</h2><Link href="/events/" className="small">All events</Link></div>
           {events.length === 0 && <p className="muted">Nothing in the event log touches this stock right now.</p>}
           {events.map((e) => (
             <div className="event" key={e.id}>

@@ -151,3 +151,28 @@ def test_score_history_covers_recent_quarters():
     h = backtest.score_history(uni, fins, prices, drivers, fixtures.small_weights(), date(2026, 11, 18), log=lambda m: None)
     assert h["OIL0"][-1][0] == "2026-09-01"
     assert len(h["OIL0"]) >= 16
+
+
+def test_backtest_diagnostics_cover_fairer_tests():
+    uni, fin_recs, price_recs, drv_recs = fixtures.small_data()
+    fins, prices, drivers = engine.load_inputs(uni, fin_recs, price_recs, drv_recs)
+    bt = backtest.run(uni, fins, prices, drivers, fixtures.small_weights(), today=date(2026, 11, 18), log=lambda m: None)
+    dg = bt["diagnostics"]
+    assert [t["label"] for t in dg["quality_tests"]][:3] == ["As first run", "Against the middle stock", "Within each sector"]
+    assert dg["by_sector"] and dg["rows"] and len(dg["top_winners"]) == 12
+    assert dg["consistency"]["dates"] >= 1
+
+
+def test_news_parsing_and_tagging():
+    from pipeline.sources import news
+    rss = """<?xml version="1.0"?><rss><channel>
+      <item><title>Vistra signs nuclear power deal - Reuters</title><link>https://news.google.com/a</link>
+        <pubDate>Mon, 23 Nov 2026 14:00:00 GMT</pubDate><source url="https://reuters.com">Reuters</source></item>
+      <item><title>Oil slips as talks resume (XOM) - CNBC</title><link>https://news.google.com/b</link>
+        <pubDate>Mon, 23 Nov 2026 16:00:00 GMT</pubDate><source url="https://cnbc.com">CNBC</source></item>
+    </channel></rss>"""
+    items = news.tag(news.parse(rss), [{"ticker": "VST", "name": "Vistra Corp."}, {"ticker": "XOM", "name": "Exxon Mobil Corporation"}])
+    assert items[0]["title"] == "Oil slips as talks resume (XOM)" and items[0]["source"] == "CNBC"
+    assert items[0]["tickers"] == ["XOM"] and items[1]["tickers"] == ["VST"]
+    assert news.clean_name("Exxon Mobil Corporation") == "Exxon Mobil"
+    assert news.parse("not xml") == []

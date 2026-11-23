@@ -46,3 +46,23 @@ export const ACTION_GROUP = {
 };
 
 export const GROUP_LABEL = { buy: "Buy signals", hold: "Hold or watch", trim: "Trim", sell: "Sell or avoid", none: "Not enough data" };
+
+// "Nov 21, 2026, 10:36 PM ET" in New York time, whatever time zone the site is built in.
+export function stamp(iso, withYear = true) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  const day = d.toLocaleDateString("en-US", { month: "short", day: "numeric", ...(withYear ? { year: "numeric" } : {}), timeZone: "America/New_York" });
+  const time = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+  return `${day}, ${time} ET`;
+}
+
+export function ago(iso, now = Date.now()) {
+  if (!iso) return "";
+  const m = Math.round((now - new Date(iso).getTime()) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} ${h === 1 ? "hour" : "hours"} ago`;
+  const dd = Math.round(h / 24);
+  return `${dd} ${dd === 1 ? "day" : "days"} ago`;
+}

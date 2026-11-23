@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "./Icons";
 import ThemeToggle from "./ThemeToggle";
+import Freshness from "./Freshness";
 import { useHoldings, useWatchlist } from "@/lib/store";
 import { money } from "@/lib/format";
 
@@ -73,7 +74,7 @@ function Palette({ stocks, onClose }) {
   );
 }
 
-export default function Shell({ stocks, asof, children }) {
+export default function Shell({ stocks, asof, updated, children }) {
   const path = usePathname() || "/";
   const [open, setOpen] = useState(false);
   const [mac, setMac] = useState(false);
@@ -110,7 +111,7 @@ export default function Shell({ stocks, asof, children }) {
           </nav>
         ))}
         <div className="rail-foot">
-          {asof ? <><span className="fresh" aria-hidden />Prices from {asof}. Rescored every weekday after the market closes.</> : "Waiting for the first data run."}
+          <Freshness updated={updated} asof={asof} />
         </div>
       </aside>
       <div className="main">
@@ -120,7 +121,7 @@ export default function Shell({ stocks, asof, children }) {
             <span>Search stocks and pages</span>
             <span className="kbd">{mac ? "⌘ K" : "Ctrl K"}</span>
           </button>
-          <div className="topbar-right"><ThemeToggle /></div>
+          <div className="topbar-right"><Freshness updated={updated} variant="badge" /><ThemeToggle /></div>
         </header>
         <div className="content">{children}</div>
       </div>

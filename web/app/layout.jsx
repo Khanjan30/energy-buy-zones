@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <Shell stocks={stocks} asof={data ? date(data.asof) : null}>
+        <Shell stocks={stocks} asof={data ? date(data.asof) : null} updated={data?.generated_at || null}>
           {children}
           <footer className="footer">
             <span>Prices from {data?.sources?.prices || "Twelve Data"}, company filings from SEC EDGAR, oil and gas prices from the EIA (Energy Information Administration).</span>
